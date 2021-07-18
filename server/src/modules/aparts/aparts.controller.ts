@@ -11,7 +11,7 @@ export class ApartsController {
   }
 
   @Get('/gus')
-  getAllGus() {
+  getAllGus() {``
     return this.apartsService.getAllGus();
   }
 }

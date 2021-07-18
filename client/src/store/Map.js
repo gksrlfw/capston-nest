@@ -1,11 +1,13 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 /* eslint-disable no-undef */
-import { positions } from "@/../samples";
+// import { positions } from "@/../samples";
 import axios from 'axios';
 import { BASE_URL, axiosOptions, TOKEN, EMAIL } from "@/store/Global";
+import { reactive, toRefs, ref, watch } from "vue";
 
 export default class Map {
+  map;
   initMap() {
     const script = document.createElement("script");
 
@@ -14,51 +16,111 @@ export default class Map {
     document.head.appendChild(script);
   }
 
-  async getAllGus() {
-    const token = JSON.parse(sessionStorage.getItem(TOKEN));
-    if(!token) return;
-    
-    const headers = {
-      Authorization: `TOKEN ${token}`
-    }
-
-    const response = await axios.get(`${BASE_URL}/map/gus`, { headers }, axiosOptions);
-    console.log(response);
-  }
-
   async addClusterer() {
-    await this.getAllGus();
-    kakao.maps.load(function () {
+    let isOver = true;
+    let data = await getAllGus();
+    kakao.maps.load(() => {
+      // 맵 생성
       let map = new kakao.maps.Map(document.getElementById("map"), {
-        center: new kakao.maps.LatLng(37.4600969, 126.9001546), // 지도의 중심좌표
+        center: new kakao.maps.LatLng(37.5642135, 127.0016985), // 지도의 중심좌표
         level: 8, // 지도의 확대 레벨
       });
+
+      // 클러스터러 생성
       let clusterer = new kakao.maps.MarkerClusterer({
         map: map,
         averageCenter: true,
         minLevel: 5, // level 5까지 클러스터러가 보인다
       });
 
-      let arrs = positions.positions;
-      // let markers = arrs.map((position, index) => {
-      //   return new kakao.maps.Marker({
-      //     position: new kakao.maps.LatLng(position.lat, position.lng),
-      //   });
-      // });
+      // 지도 확대 축소를 제어할 수 있는  줌 컨트롤을 생성합니다
+      let zoomControl = new kakao.maps.ZoomControl();
+      map.addControl(zoomControl, kakao.maps.ControlPosition.RIGHT);
 
-      // Custom overlays
-      let customOverlays = arrs.map((position, index) => {
+      // 지도가 확대 또는 축소되면 마지막 파라미터로 넘어온 함수를 호출하도록 이벤트를 등록합니다
+      kakao.maps.event.addListener(map, 'zoom_changed', async function() {        
+        // 지도의 현재 레벨을 얻어옵니다
+        let level = map.getLevel();
+        let message = '현재 지도 레벨은 ' + level + ' 입니다';
+        console.log(message);
+
+        if(level > 6) {
+          if(isOver) return;
+          data = await getAllGus();
+          isOver = true;
+        }
+        else {
+          // 현재 위치에서의 중심 좌표
+          // 지금 6을 기준으로 나뉜다
+          // 각 zoom 마다 좌표 범위를 설정하지 말고, 6을 기준으로 화면 전체에 해당하는 4개의 좌표 위치를 구한다
+          // 이 범위 내에 있는 아파트들을 불러오자
+          let latlng = map.getCenter(); 
+          data = await getAllApart();
+          isOver = false;
+        }
+      });
+
+      // Custom overlays로 지도에 표시
+      let customOverlays = data.map((position, index) => {
         return new kakao.maps.CustomOverlay({
-          content: '<div style="padding:5px 5px; background:#FEF7DC;">Hello</div>',
-          position: new kakao.maps.LatLng(position.lat, position.lng),
+          // content: `<div style="padding:5px 5px; background:#FEF7DC;">${position.size}</div>`,
+          content: getContent(position.size),
+          position: new kakao.maps.LatLng(position.latitude, position.longitude),
           map: map,
         });
       });
 
       clusterer.addMarkers(customOverlays);
     });
-    const content = `
-    <div style="padding:0 5px;background:#fff;>hello</div>
-    `
   }
+}
+
+async function getAllGus() {
+  console.log('get All gu');
+  const token = JSON.parse(sessionStorage.getItem(TOKEN));
+  if(!token) return;
+  
+  const headers = {
+    Authorization: `TOKEN ${token}`
+  }
+
+  const response = await axios.get(`${BASE_URL}/map/gus`, { headers }, axiosOptions);
+  return response.data;
+}
+
+async function getAllApart() {
+  console.log('get All apart');
+}
+
+function controllZoom(map) {
+  // 지도 확대 축소를 제어할 수 있는  줌 컨트롤을 생성합니다
+  var zoomControl = new kakao.maps.ZoomControl();
+  map.addControl(zoomControl, kakao.maps.ControlPosition.RIGHT);
+
+  // 지도가 확대 또는 축소되면 마지막 파라미터로 넘어온 함수를 호출하도록 이벤트를 등록합니다
+  kakao.maps.event.addListener(map, 'zoom_changed', function() {        
+      
+      // 지도의 현재 레벨을 얻어옵니다
+      var level = map.getLevel();
+      
+      var message = '현재 지도 레벨은 ' + level + ' 입니다';
+      console.log(message);
+      // var resultDiv = document.getElementById('result');  
+      // resultDiv.innerHTML = message;
+      
+  });
+}
+
+const getContent = (str) => {
+  return `
+  <div style="
+  color: #4A3933;		
+  box-sizing: border-box;
+  border-radius: 50% 50%;
+  height: 50px;
+  width: 50px;  
+  text-align: center;
+  line-height: 50px;
+  background-color:#CDF0EA;">${str}</div>
+  `;
 }

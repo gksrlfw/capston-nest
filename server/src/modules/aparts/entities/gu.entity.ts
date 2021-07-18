@@ -13,6 +13,12 @@ export class GuEntity extends AbstractEntity {
   @Column()
   size: number; // 아파트 갯수
 
+  @Column("decimal", { precision: 11, scale: 8 })
+  latitude: number;
+
+  @Column("decimal", { precision: 11, scale: 8 })
+  longitude: number;
+  
   toJSON() {
     return classToPlain(this);
   }

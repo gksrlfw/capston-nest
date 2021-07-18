@@ -9,7 +9,7 @@ import { Request, Response } from 'express';
  * global 로 filter 로 등록되어있습니다.
  * app.module 을 참조하세요.
  */
-@Catch()
+@Catch(HttpException)
 export class AllExceptionFilter implements ExceptionFilter {
   private readonly logger: Logger = new Logger(this.constructor.name);
 
@@ -19,6 +19,7 @@ export class AllExceptionFilter implements ExceptionFilter {
     const request: Request = ctx.getRequest();
 
     this.logger.error(exception);
+    console.log('?????????')
 
     // http exception 이 아닐경우, 500 error 로 변환후 반환합니다.
     const status = exception instanceof HttpException ? exception.getStatus() : HttpStatus.INTERNAL_SERVER_ERROR;
