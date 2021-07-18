@@ -14,6 +14,7 @@ import { LoggerModule } from './logger/logger.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { UsersModule } from './modules/users/users.module';
 import { ApartsModule } from './modules/aparts/aparts.module';
+import { AllExceptionFilter } from './common/filters/exception.filter';
 
 @Module({
   imports: [
@@ -24,6 +25,12 @@ import { ApartsModule } from './modules/aparts/aparts.module';
     AuthModule,
     ApartsModule
   ],
+  providers: [
+    {
+      provide: APP_FILTER,
+      useClass: AllExceptionFilter
+    }
+  ]
 })
 export class AppModule implements OnApplicationBootstrap, OnModuleInit, OnModuleDestroy, OnApplicationShutdown {
   private readonly logger: Logger = new Logger();

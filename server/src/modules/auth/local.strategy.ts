@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Strategy } from 'passport-local';
@@ -22,10 +22,11 @@ export class LocalStrategy extends PassportStrategy(Strategy, 'local') {
   // passport would create user object auto in request
   async validate(email: string, password: string) {
     const user = await this.userRepository.findOne({ where: { email } });
-    if (!user || !(await user.comparePassword(password, user.salt)))
+    if (!user || !(await user.comparePassword(password, user.salt))) {
       throw new UnauthorizedException(
         'Invalid credentials in find user or compare password',
       );
+    }
     return user;
   }
 }
