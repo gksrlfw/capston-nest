@@ -21,7 +21,8 @@ export default {
 </script>
 <style lang="scss">
 #map {
-  width: 100%;
+  margin-left: 30px;
+  width: 70%;
   height: 500px;
 }
 </style>

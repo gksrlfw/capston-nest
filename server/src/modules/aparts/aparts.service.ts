@@ -8,8 +8,21 @@ export class ApartsService {
 
   constructor(@InjectRepository(ApartEntity) private apartRepository: Repository<ApartEntity>) {}
 
-  getAllAparts() {
-    return this.apartRepository.query(`select * from apart limit 10`);
+  async getAllAparts() {
+    const aparts = await this.apartRepository.query(`select * from apart order by traded_at desc`);
+
+    const map = new Map<number, Array<any>>();
+
+    return aparts.map(apart => {
+      if(map.has(apart.latitude)) {
+        if(map.get(apart.latitude) === apart.longitude) return;
+      }
+      else {
+        map.set(apart.latitude, apart.longitude);
+        return apart;
+      }
+    })
+    .filter(n => n !== undefined);
   }
 
   getAllGus() {
