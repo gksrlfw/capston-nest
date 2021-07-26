@@ -70,7 +70,7 @@ export default class Map {
       let customOverlays = data.value.map((position, index) => {
         return new kakao.maps.CustomOverlay({
           // content: `<div style="padding:5px 5px; background:#FEF7DC;">${position.size}</div>`,
-          content: getContent(position.size),
+          content: getContentNumber(position.size),
           position: new kakao.maps.LatLng(position.latitude, position.longitude),
           map: map,
         });
@@ -80,33 +80,19 @@ export default class Map {
 
       // data가 바뀌면 마커를 다시 그려줍니다.
       watch(() => data.value, () => {
+        clusterer.clear();
+
         let customOverlays = data.value.map((position, index) => {
           return new kakao.maps.CustomOverlay({
-            // content: `<div style="padding:5px 5px; background:#FEF7DC;">${position.size}</div>`,
-            content: getContent(position.size),
+            content: position.size ? getContentNumber(position.size): getContentName(position.apart),
             position: new kakao.maps.LatLng(position.latitude, position.longitude),
             map: map,
           });
         });
-  
         clusterer.addMarkers(customOverlays);
       });
     });
   }
-}
-
-function a() {
-  // Custom overlays로 지도에 표시
-  let customOverlays = data.value.map((position, index) => {
-    return new kakao.maps.CustomOverlay({
-      // content: `<div style="padding:5px 5px; background:#FEF7DC;">${position.size}</div>`,
-      content: getContent(position.size),
-      position: new kakao.maps.LatLng(position.latitude, position.longitude),
-      map: map,
-    });
-  });
-
-  clusterer.addMarkers(customOverlays);
 }
 
 /**
@@ -171,7 +157,7 @@ function controllZoom(map) {
  * @param {*} str 
  * @returns 
  */
-const getContent = (str) => {
+const getContentNumber = (str) => {
   return `
   <div style="
   color: #4A3933;		
@@ -183,4 +169,22 @@ const getContent = (str) => {
   line-height: 50px;
   background-color:#CDF0EA;">${str}</div>
   `;
-}
+};
+
+const getContentName = (str) => {
+  return `
+  <div style="
+    box-sizing: border-box;
+    border-radius: 10%;
+    /* height: 50px; */
+    /* width: 50px; */
+    text-align: center;
+    /* line-height: 50px; */
+    background-color: gray;
+    color: whitesmoke;
+    padding: 5% 10% 5% 10%;
+    /* margin-right: 1px; */
+    display: inline;
+  ">${str}</div>
+  `;
+};

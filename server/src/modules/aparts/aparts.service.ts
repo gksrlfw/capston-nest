@@ -28,4 +28,18 @@ export class ApartsService {
   getAllGus() {
     return this.apartRepository.query(`select * from gu`);
   }
+
+  /**
+   * 유저가 입력한 값에 해당하는 이름을 가진 아파트들만 추려서 보내준다.
+   * @param helper
+   */
+  async setSearchHelper(helper) {
+    return (await this.getAllAparts())
+        .map(apart => {
+          if(apart.apart.includes(helper)) return [apart.apart.indexOf(helper), apart.apart];
+        })
+        .filter(n => n !== undefined)
+        .sort()
+        .map(n => n[1]);
+  }
 }
