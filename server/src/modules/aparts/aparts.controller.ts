@@ -1,4 +1,4 @@
-import {Body, Controller, Get, Query} from '@nestjs/common';
+import {BadRequestException, Body, Controller, Get, Query} from '@nestjs/common';
 import { ApartsService } from './aparts.service';
 
 @Controller('/')
@@ -42,6 +42,7 @@ export class ApartsController {
    */
   @Get('/search/helper')
   setSearchHelper(@Query('helper') helper: string) {
+    if(!helper) throw new BadRequestException('입력값이 없습니다');
     return this.apartsService.setSearchHelper(helper);
   }
 }

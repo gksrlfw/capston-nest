@@ -1,5 +1,6 @@
 <template lang="">
-  <form class="mb-4 w-full md:mb-0 md:w-1/2" @submit.prevent="search">
+<div class="flex flex-col mb-4 md:mb-0 sm:w-1/2">
+  <form class="" @submit.prevent="search">
     <label class="hidden" for="search-form">Search</label>
     <input
       class="
@@ -10,6 +11,7 @@
         rounded-lg
         shadow-inner
         w-full
+        text-gray-700
       "
       :value="userInput"
       @input="setUserinput"
@@ -18,12 +20,21 @@
     />
     <button class="hidden">Submit</button>
   </form>
+  <!-- @TODO 부모요소에서 벗어나기... -->
+  <div class="bg-white text-gray-700 p-5 rounded-md fixed top-20 bg-gray-100 shadow-2xl w-5/12 hidden md:block z-10" v-if="userInput" >
+    <NavbarSearchHelper />
+  </div>
+  </div>
 </template>
 <script>
 import {ref, watch} from "vue";
 import searchStore from "@/store/Search";
+import NavbarSearchHelper from "@/components/Navbar/NavbarSearchHelper";
 
 export default {
+  components: {
+    NavbarSearchHelper
+  },
   setup() {
     const userInput = ref('');
 
@@ -56,7 +67,7 @@ export default {
     return {
       userInput,
       search,
-      setUserinput
+      setUserinput,
     }
   }
 };

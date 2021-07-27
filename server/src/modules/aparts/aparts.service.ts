@@ -31,6 +31,8 @@ export class ApartsService {
 
   /**
    * 유저가 입력한 값에 해당하는 이름을 가진 아파트들만 추려서 보내준다.
+   * 삼성을 검색했을 때, 삼성래미안은 리버힐삼성보다 앞에 보여야한다.
+   * 해당 글자가 있는 인덱스를 저장하여 이를 기준으로 정렬한다.
    * @param helper
    */
   async setSearchHelper(helper) {

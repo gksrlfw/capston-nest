@@ -13,7 +13,6 @@
       <NavbarLogo />
       <NavbarSearch />
       <NavbarAuth />
-      <NavbarSearchHelper />
     </div>
   </header>
 </template>
@@ -21,13 +20,11 @@
 import NavbarAuth from "@/components/Navbar/NavbarAuth";
 import NavbarLogo from "@/components/Navbar/NavbarLogo";
 import NavbarSearch from "@/components/Navbar/NavbarSearch";
-import NavbarSearchHelper from "@/components/Navbar/NavbarSearchHelper";
 export default {
   components: {
     NavbarAuth,
     NavbarLogo,
     NavbarSearch,
-    NavbarSearchHelper
   },
 };
 </script>

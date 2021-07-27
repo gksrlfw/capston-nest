@@ -16,16 +16,22 @@ export class SearchStore {
 
   userInputApart = ref('');
   userInputGu = ref('');
-  searchHelper = ref({});
+  searchHelper = ref('');
 
   getSearchHelper() {
-    return this.searchHelper.value;
+    return this.searchHelper;
   }
 
   async setSearchHelper(userInput) {
-    const response = await axios.get(`${BASE_URL}/search/helper?helper=${userInput}`);
-    this.searchHelper.value = response.data;
-    console.log(response, this.searchHelper.value);  
+    try {
+      const response = await axios.get(`${BASE_URL}/search/helper?helper=${userInput}`);
+      this.searchHelper.value = response.data;
+      console.log(response, this.searchHelper.value);  
+    }
+    catch(err) {
+      console.error(err);
+      this.searchHelper.value = '';
+    }
   }
 
   async filterGu(userInput) {
