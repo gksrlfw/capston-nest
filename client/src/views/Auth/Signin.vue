@@ -78,7 +78,7 @@ export default {
           password: password.value,
         });
         if (authState.signinError) return;
-        return router.push({ name: "Home" });
+        return router.push({ name: "MapView" });
       } catch (err) {
         console.error(err);
       }

@@ -2,7 +2,7 @@
   <div class="">
     <ul v-if="searchHelper.length" >
       <li v-for="item in searchHelper" :key="item.apart">
-        {{ item }}
+        {{'('+item.dong+') ' +item.apart }}
       </li>
     </ul>
     <ul v-else>
@@ -21,7 +21,7 @@ export default {
      */
     const searchHelper = searchStore.getSearchHelper();
     watch(() => searchHelper.value, () => {
-      console.log(searchHelper.value) 
+      console.log(searchHelper.value);
     })
     return {
       searchHelper

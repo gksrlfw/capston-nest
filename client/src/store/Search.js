@@ -6,27 +6,49 @@ import { BASE_URL, axiosOptions, TOKEN, EMAIL } from "@/store/Global";
 import axios from 'axios';
 
 export class SearchStore {
-  authState = reactive({
-    signinError: '',
-    signupError: '',
-    isSignin: false,
-    isSignup: false,
-    signinResponse: {},
-  });
-
   userInputApart = ref('');
   userInputGu = ref('');
   searchHelper = ref('');
+  currentAparts = ref([{    // 현재 선택된 아파트의 모든 거래 내역을 area, value로 받아옵니다.
+    area: "78.94",
+    value: [
+        {
+            id: 4285,
+            created: "2021-07-18T12:04:32.107Z",
+            updated: "2021-07-18T12:04:32.107Z",
+            price: 61800,
+            built_at: 2007,
+            traded_at: "2020-07-01T15:00:00.000Z",
+            dong: "면목동",
+            apart: "마젤란21",
+            latitude: "37.58686760",
+            longitude: "127.08412530",
+            floor: 8,
+            area: "78.94"
+        }
+    ]
+  }]);
+  currentApart = ref('');   // 현재 선택된 아파트 정보
 
   getSearchHelper() {
     return this.searchHelper;
   }
 
+  getCurrentAparts() {
+    return this.currentAparts;
+  }
+
+  getCurrentApart() {
+    return this.currentApart;
+  }
+
+  /**
+   * 유저의 입력값에 따라 서치헬퍼를 등록합니다.
+   */
   async setSearchHelper(userInput) {
     try {
       const response = await axios.get(`${BASE_URL}/search/helper?helper=${userInput}`);
       this.searchHelper.value = response.data;
-      console.log(response, this.searchHelper.value);  
     }
     catch(err) {
       console.error(err);
@@ -34,118 +56,36 @@ export class SearchStore {
     }
   }
 
+  /**
+   * 입력에 해당하는 구에 대한 아파트만 가져옵니다.
+   */
   async filterGu(userInput) {
     this.userInputGu.value = userInput;
     const response = await axios.get(`${BASE_URL}/search/gu?gu=${userInput}`);
-    console.log(response);
   }
 
-  async search(userInput) {
+  /**
+   * 아파트 이름에 해당하는 모든 아파트를 가져옵니다.
+   */
+  async searchAllApart(userInput) {
     this.userInputApart.value = userInput;
-    const response = await axios.get(`${BASE_URL}/search/apart?apart=${userInput}`, signupRequest, axiosOptions);
+    const response = await axios.get(`${BASE_URL}/search/aparts?apart=${userInput}`);
     console.log(response);
   }
 
-  getAuthState() {
-    return this.authState;
-  }
-
-  setAuthState(signinResponse) {
-    this.authState.signinResponse = signinResponse;
-    this.authState.isSignin = true;
-  }
-  async signup(signupRequest){
+  /**
+   * apart, 동으로 해당 아파트의 정보를 검색합니다.
+   */
+  async searchOneApart({ dong, apart }) {
     try {
-      console.log(BASE_URL, signupRequest)
-      const response = await axios.post(`${BASE_URL}/auth/signup`, signupRequest, axiosOptions);
-      console.log(response);
-      this.succeedSignup();
+      const response = await axios.get(`${BASE_URL}/search/apart?apart=${apart}&dong=${dong}`);
+      this.currentAparts.value = response.data;
+      this.currentApart.value = response.data[0].value[0];
+      console.log(this.currentApart.value)
     }
     catch(err) {
-      console.error(err.response);
-      this.failedSignup(err.response.data.message);
+      console.log(err);
     }
-  }
-
-  async signin(signinRequest) {
-    try {
-      const response = await axios.post(`${BASE_URL}/auth/signin`, signinRequest, axiosOptions);
-      console.log(response.data.data);
-      this.succeedSignin(response.data.message);
-      sessionStorage.setItem(TOKEN, JSON.stringify(response.data.data.token));
-      sessionStorage.setItem(EMAIL, JSON.stringify(signinRequest.email));
-      return this.getAuthState();
-    }
-    catch(err) {
-      console.error(err.response);
-      this.failedSignin(err.response.data.message);
-    }
-  }
-
-  async signout() {
-    try {
-      const token = JSON.parse(sessionStorage.getItem(TOKEN));
-      if(!token) return;
-      
-      const headers = {
-        Authorization: `TOKEN ${token}`
-      }
-      await axios.get(`${BASE_URL}/auth/signout`, { headers }, axiosOptions);
-      this.clearState();
-      sessionStorage.removeItem(TOKEN);
-      sessionStorage.removeItem(EMAIL);
-    }
-    catch(err) {
-      console.error(err.message);
-    }
-  }
-
-  async refresh() {
-    try {
-      const token = JSON.parse(sessionStorage.getItem(TOKEN));
-      if(!token) return;
-      const email = JSON.parse(sessionStorage.getItem(EMAIL));
-      this.authState.signinResponse.email = email;
-      const headers = {
-        Authorization: `TOKEN ${token}`
-      }
-      const response = await axios.get(`${BASE_URL}/auth/refresh`, { headers }, axiosOptions);
-      this.succeedSignin(response.data.message);
-      console.log(response);
-    }
-    catch(err) {
-      console.error(err.response);
-      await this.signout();
-      return alert(err.response.data.message);
-    }
-  }
- 
-  clearState() {
-    this.authState.isSignin = false;
-    this.authState.isSignup = false;
-    this.authState.signinError = '';
-    this.authState.signupError = '';
-    this.authState.signinResponse = {};
-  }
-  clearError() {
-    this.authState.signinError = '';
-    this.authState.signupError = '';
-  }
-  succeedSignin(signinResponse) {
-    this.authState.signinResponse = signinResponse;
-    this.authState.isSignin = true;
-  }
-  succeedSignup() {
-    this.authState.isSignup = true;
-  }
-  failedSignin(error) {
-    this.authState.isSignin = false;
-    this.authState.signinError = error;
-  }
-
-  failedSignup(error) {
-    this.authState.isSignup = false;
-    this.authState.signupError = error;
   }
 }
 

@@ -5,9 +5,8 @@
         container
         mx-auto
         md:flex md:items-center md:justify-between
-        p-4
-        pb-0
-        md:pb-4
+        p-3
+        
       "
     >
       <NavbarLogo />

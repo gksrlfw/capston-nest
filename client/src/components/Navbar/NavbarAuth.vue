@@ -1,10 +1,10 @@
 <template lang="">
-  <nav>
+  <nav class="md:block hidden">
     <ul class="list-reset md:flex md:items-center">
       <li class="md:ml-4">
         <router-link
           v-if="!authState.isSignin"
-          to="/signin"
+          to="/"
           class="
             block
             no-underline
@@ -36,6 +36,7 @@
 import IconUser from "@/components/Icons/IconUser";
 import IconLogout from "@/components/Icons/IconLogout";
 import authStore from "@/store/Auth";
+import { useRouter } from "vue-router";
 
 export default {
   components: {
@@ -43,9 +44,11 @@ export default {
     IconLogout,
   },
   setup() {
+    const router = new useRouter();
     const authState = authStore.getAuthState();
     async function signout() {
       await authStore.signout();
+      return router.push({ name: "Signin" });
     }
     return {
       authState,

@@ -1,6 +1,6 @@
 <template lang="" class="">
   <!-- Logo text or image -->
-  <div class="flex items-center justify-between mb-4 md:mb-0 hidden md:block">
+  <div class="flex items-center justify-between md:mb-0 hidden md:block">
     <h1 class="leading-none text-2xl text-grey-darkest">
       <a class="no-underline text-grey-darkest hover:text-black" href="#">
         ZELA

@@ -1,10 +1,41 @@
-import {BadRequestException, Body, Controller, Get, Query} from '@nestjs/common';
+import {BadRequestException, Body, Controller, Get, Post, Query} from '@nestjs/common';
 import { ApartsService } from './aparts.service';
+import {Test} from "@nestjs/testing";
+import {IsString} from "class-validator";
+
+class TestClass {
+  constructor(a, b) {
+    this.a = a;
+    this.b = b;
+  }
+  @IsString()
+  a: string;
+  @IsString()
+  b: string;
+  @IsString()
+  c: string;
+}
+
+interface TestInterface {
+  a: string;
+  b: string;
+}
+type TestType = {
+  a: string;
+  b: string;
+}
 
 @Controller('/')
 export class ApartsController {
   constructor(private apartsService: ApartsService){}
-
+  
+  @Post('/map/test')
+  test(@Body() input: TestClass) {
+    console.log(input, typeof input, input instanceof TestClass);
+    // const a = new TestClass(input.a, input.b);
+    // console.log(a)
+  }
+  
   @Get('/map/aparts')
   getAllAparts(@Body() position) {
     console.log(position)
@@ -16,14 +47,25 @@ export class ApartsController {
     return this.apartsService.getAllGus();
   }
 
+
+  
   /**
    * 유저가 실제로 엔터를 눌럿을 때 검색한 아파트를 보여줘야한다
    * 기본적인 아파트 정보를 보내주고, 맵의 좌표를 그곳으로 향하게 해줘야 한다
    * @param apart
    */
-  @Get('/search/apart')
+  @Get('/search/aparts')
   searchApart(@Query('apart') apart: string) {
     console.log(apart);
+  }
+  
+  /**
+   *
+   * @param apart
+   */
+  @Get('/search/apart')
+  searchOneApart(@Query() input: { dong, apart }) {
+    return this.apartsService.searchOneApart(input);
   }
 
   /**

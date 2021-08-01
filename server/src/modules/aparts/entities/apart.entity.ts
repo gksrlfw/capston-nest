@@ -17,6 +17,9 @@ export class ApartEntity extends AbstractEntity {
   traded_at: Date;    // 년, 월, 일 합치기
 
   @Column()
+  gu: string;
+  
+  @Column()
   dong: string;     
 
   @Column()

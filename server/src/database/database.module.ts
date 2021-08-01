@@ -19,7 +19,7 @@ import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
         const databaseUserForMaster = configService.get<string>('DATABASE_USER_MASTER', 'root');
         const databaseUserPasswordForMaster = configService.get<string>('DATABASE_USER_PASSWORD_MASTER', '');
 
-        const databaseName = configService.get<string>('DATABASE_NAME', 'sample');
+        const databaseName = configService.get<string>('DATABASE_NAME', 'recommend');
 
         const shouldSynchronize = configService.get<boolean>('SHOULD_SYNCHRONIZE_DATABASE', false);
         const shouldMigrate = configService.get<boolean>('SHOULD_MIGRATE_DATABASE', false);
