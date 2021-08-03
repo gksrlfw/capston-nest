@@ -78,7 +78,9 @@ export class SearchStore {
    */
   async searchOneApart({ dong, apart }) {
     try {
+
       const response = await axios.get(`${BASE_URL}/search/apart?apart=${apart}&dong=${dong}`);
+      console.log(response);
       this.currentAparts.value = response.data;
       this.currentApart.value = response.data[0].value[0];
       console.log(this.currentApart.value)

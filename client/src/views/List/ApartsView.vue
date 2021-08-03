@@ -4,7 +4,7 @@
     <div class="text-4xl">{{ currentApart.apart + " (" + currentApart.dong + ") " }}</div>
     <small class="">built at {{ currentApart.built_at }}</small>
   </h1>
-  <section class="flex flex-row">
+  <section class="flex flex-row mb-10">
     <div class="inline w-1/3">
     <div>
       <!-- <div class="mb-10 mt-9"> -->
@@ -86,9 +86,10 @@ export default {
      * 평균 거래가를 계산합니다.
      */
     function calculatedAvg() {
+      // if(!currentApart.value) return;
       let arr = [], sum = 0;
       currentApart.value = currentAparts.value[0].value[0];
-      console.log(currentAparts.value);
+      console.log('ㅁㄴㅇㄹㅁㄴㅇㄹ', currentAparts.value);
       currentAparts.value.map(apart => {
         sum = 0;
         apart.value.map(data => {

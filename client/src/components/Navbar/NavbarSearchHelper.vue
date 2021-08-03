@@ -1,7 +1,7 @@
 <template lang="">
   <div class="">
     <ul v-if="searchHelper.length" >
-      <li v-for="item in searchHelper" :key="item.apart">
+      <li v-for="item in searchHelper" :key="item.id" @keydown.enter="onSearchWithEnter">
         {{'('+item.dong+') ' +item.apart }}
       </li>
     </ul>
@@ -16,15 +16,18 @@ import { watch } from '@vue/runtime-core';
 
 export default {
   setup() {
-    /**
-     * searchHelper를 바꿔도 실시간으로 표시되지 않는다... 왜지?? 고치기
-     */
     const searchHelper = searchStore.getSearchHelper();
     watch(() => searchHelper.value, () => {
       console.log(searchHelper.value);
-    })
+    });
+
+    function onSearchWithEnter(e) {
+      console.log(e.target);
+    }
+
     return {
-      searchHelper
+      searchHelper,
+      onSearchWithEnter
     }
   }
 }

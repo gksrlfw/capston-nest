@@ -3,6 +3,8 @@
   <form class="" @submit.prevent="search">
     <label class="hidden" for="search-form">Search</label>
     <input
+      @keydown.up="onKeyUp"
+      @keydown.down="onKeyDown"
       @keydown.esc="onPressEsc" 
       class="
         bg-grey-lightest
@@ -13,7 +15,6 @@
         shadow-inner
         text-gray-700
         w-full
-        
       "
       :value="userInput"
       @input="setUserinput"
@@ -22,8 +23,7 @@
     />
     <button class="hidden">Submit</button>
   </form>
-  <!-- @TODO 부모요소에서 벗어나기... -->
-  <div class="bg-white text-gray-700 p-5 rounded-md fixed top-20 bg-gray-50 shadow-2xl md:w-96 z-10" v-if="onSearchHelper" @click="onClickSearchHelper" > 
+  <div class="bg-white text-gray-700 p-5 rounded-md top-20 bg-gray-50 shadow-2xl md:w-96 z-10 absolute" v-if="onSearchHelper" @click="onClickSearchHelper" > 
     <NavbarSearchHelper />
   </div>
   </div>
@@ -39,6 +39,10 @@ export default {
   setup() {
     const userInput = ref('');
     const onSearchHelper = ref(false);
+    const searchHelperIndex = ref(0);
+    const searchHelperElements = ref();
+    const tempUserInput = ref('');
+
     /**
      * 한글같은 IME가 필요한 언어는 v-model로는 실시간 처리가 되지 않는다.
      * 이렇게 수동으로 해줘야 한다.
@@ -46,7 +50,10 @@ export default {
     function setUserinput(e) {
       if(!onSearchHelper.value) onSearchHelper.value = true;
       userInput.value = e.target.value;
+      tempUserInput.value = userInput.value;
+      searchHelperIndex.value = 0;
     }
+
     /**
      * 구, 가격은 필터링해야 될거같은데... 나중에 정하자
      */
@@ -55,7 +62,13 @@ export default {
      * search.. => 아파트 이름만 검색할 수 있도록 하자
      */
     function search() {
-      console.log(userInput);
+      console.log(tempUserInput.value);
+      let [dong, apart] = tempUserInput.value.split(' ');
+      dong = dong.substring(0, dong.length-1);
+      dong = dong.substring(1, dong.length);
+      console.log(dong, apart);
+      searchStore.searchOneApart({ dong, apart });
+      onPressEsc();
     }
 
     /**
@@ -63,7 +76,7 @@ export default {
      * 시간되면 디바운싱 구현해보자
      */
     watch(() => userInput.value, async () => {
-      await searchStore.setSearchHelper(userInput.value); 
+      await searchStore.setSearchHelper(userInput.value);
     });
 
     /**
@@ -73,12 +86,69 @@ export default {
       onSearchHelper.value = false;
     }
 
+
     async function onClickSearchHelper(e) {
+      if(!e.target.textContent) return;
       const arr = e.target.textContent.split(' ');
       const dong = arr[0].substring(1, arr[0].length).substring(0, arr[0].length-2);
       const apart = arr[1];
       onSearchHelper.value = false;
       await searchStore.searchOneApart({ dong, apart });
+    }
+
+    /**
+     * 포커스를 한 칸 아래로 내립니다.
+     */
+    function onKeyDown(e) {
+      console.log("down", searchHelperIndex.value, searchHelperElements.value)
+      let value = '';
+      // 매 번 호출 안하도록 하려고 했지만 엮이는 부분이 많아서 포기.
+      searchHelperElements.value = Array.from(e.target.parentNode.nextSibling.childNodes[0].childNodes[0].childNodes).filter(list => list.nodeName === 'LI');
+
+      if(searchHelperIndex.value === searchHelperElements.value.length) {
+        searchHelperElements.value[searchHelperIndex.value-1].classList.remove('bg-red-500');
+        searchHelperIndex.value = 0;
+      } 
+      if(searchHelperIndex.value === 0) {
+        searchHelperElements.value[searchHelperIndex.value].classList.add('bg-red-500');
+        value = searchHelperElements.value[searchHelperIndex.value].textContent;
+        searchHelperIndex.value = 1;
+      }
+      else {
+        searchHelperElements.value[searchHelperIndex.value-1].classList.remove('bg-red-500');
+        searchHelperElements.value[searchHelperIndex.value].classList.add('bg-red-500');
+        value = searchHelperElements.value[searchHelperIndex.value].textContent;
+        searchHelperIndex.value += 1;
+      }
+      
+      tempUserInput.value = value;
+    }
+    /**
+     * 포커스를 한 칸 위로 올립니다.
+     */
+    function onKeyUp(e) {
+      console.log("up", searchHelperIndex.value)
+      let value = '';
+      searchHelperElements.value = Array.from(e.target.parentNode.nextSibling.childNodes[0].childNodes[0].childNodes).filter(list => list.nodeName === 'LI');
+
+      if(searchHelperIndex.value === searchHelperElements.value.length) {
+        searchHelperElements.value[searchHelperIndex.value].classList.remove('bg-red-500');
+        searchHelperIndex.value = searchHelperElements.value.length-1;
+      } 
+      if(searchHelperIndex.value === 0) {
+        searchHelperElements.value[searchHelperIndex.value].classList.remove('bg-red-500');
+        searchHelperIndex.value = searchHelperElements.value.length - 1;
+        searchHelperElements.value[searchHelperIndex.value].classList.add('bg-red-500');
+        value = searchHelperElements.value[searchHelperIndex.value].textContent;
+      }
+      else {
+        searchHelperElements.value[searchHelperIndex.value].classList.remove('bg-red-500');
+        searchHelperIndex.value -= 1;
+        searchHelperElements.value[searchHelperIndex.value].classList.add('bg-red-500');
+        value = searchHelperElements.value[searchHelperIndex.value].textContent;
+      }
+
+      tempUserInput.value = value;
     }
 
     return {
@@ -88,6 +158,8 @@ export default {
       onPressEsc,
       onSearchHelper,
       onClickSearchHelper,
+      onKeyDown,
+      onKeyUp
     }
   }
 };
