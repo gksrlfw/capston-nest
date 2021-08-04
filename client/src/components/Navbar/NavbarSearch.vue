@@ -60,13 +60,14 @@ export default {
 
     /**
      * search.. => 아파트 이름만 검색할 수 있도록 하자
+     * tempUserInput은 searchHelper에서 지정된 값으로,
+     * 무조건 이걸로 검색하도록 만드는게 편할것같다..
      */
     function search() {
-      console.log(tempUserInput.value);
       let [dong, apart] = tempUserInput.value.split(' ');
+      if(!dong || !apart) return alert('검색창에서 선택해주세요.');
       dong = dong.substring(0, dong.length-1);
       dong = dong.substring(1, dong.length);
-      console.log(dong, apart);
       searchStore.searchOneApart({ dong, apart });
       onPressEsc();
     }
@@ -100,8 +101,8 @@ export default {
      * 포커스를 한 칸 아래로 내립니다.
      */
     function onKeyDown(e) {
-      console.log("down", searchHelperIndex.value, searchHelperElements.value)
       let value = '';
+      if(!e?.target || !e?.target?.parentNode || !e?.target?.parentNode?.nextSibling || !e?.target?.parentNode?.nextSibling?.childNodes || !e.target.parentNode?.nextSibling?.childNodes[0]?.childNodes || !e.target.parentNode.nextSibling.childNodes[0]?.childNodes[0]?.childNodes) return;
       // 매 번 호출 안하도록 하려고 했지만 엮이는 부분이 많아서 포기.
       searchHelperElements.value = Array.from(e.target.parentNode.nextSibling.childNodes[0].childNodes[0].childNodes).filter(list => list.nodeName === 'LI');
 
@@ -127,8 +128,8 @@ export default {
      * 포커스를 한 칸 위로 올립니다.
      */
     function onKeyUp(e) {
-      console.log("up", searchHelperIndex.value)
       let value = '';
+      if(!e?.target || !e?.target?.parentNode || !e?.target?.parentNode?.nextSibling || !e?.target?.parentNode?.nextSibling?.childNodes || !e.target.parentNode?.nextSibling?.childNodes[0]?.childNodes || !e.target.parentNode.nextSibling.childNodes[0]?.childNodes[0]?.childNodes) return;
       searchHelperElements.value = Array.from(e.target.parentNode.nextSibling.childNodes[0].childNodes[0].childNodes).filter(list => list.nodeName === 'LI');
 
       if(searchHelperIndex.value === searchHelperElements.value.length) {

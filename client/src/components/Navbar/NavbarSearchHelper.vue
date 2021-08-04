@@ -18,7 +18,7 @@ export default {
   setup() {
     const searchHelper = searchStore.getSearchHelper();
     watch(() => searchHelper.value, () => {
-      console.log(searchHelper.value);
+      // console.log(searchHelper.value);
     });
 
     function onSearchWithEnter(e) {

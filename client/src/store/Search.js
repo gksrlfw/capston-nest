@@ -47,6 +47,7 @@ export class SearchStore {
    */
   async setSearchHelper(userInput) {
     try {
+      if(!userInput) return;
       const response = await axios.get(`${BASE_URL}/search/helper?helper=${userInput}`);
       this.searchHelper.value = response.data;
     }
@@ -70,7 +71,6 @@ export class SearchStore {
   async searchAllApart(userInput) {
     this.userInputApart.value = userInput;
     const response = await axios.get(`${BASE_URL}/search/aparts?apart=${userInput}`);
-    console.log(response);
   }
 
   /**
@@ -78,15 +78,22 @@ export class SearchStore {
    */
   async searchOneApart({ dong, apart }) {
     try {
-
       const response = await axios.get(`${BASE_URL}/search/apart?apart=${apart}&dong=${dong}`);
-      console.log(response);
       this.currentAparts.value = response.data;
       this.currentApart.value = response.data[0].value[0];
-      console.log(this.currentApart.value)
     }
     catch(err) {
-      console.log(err);
+      console.err(err);
+    }
+  }
+
+  async searchOneGuWithPosition({ lat, lng }){
+    try {
+      const response = await axios.get(`${BASE_URL}/search/gu?lat=${lat}&lng=${lng}`);
+      this.currentAparts.value = response.data;
+    }
+    catch(err) {
+      console.error(err);
     }
   }
 }

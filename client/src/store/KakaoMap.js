@@ -32,6 +32,10 @@ export default class KakaoMap {
     map.setLevel(3);    
   }
 
+  // setApartsClickGu(data) {
+
+  // }
+
   async addClusterer({ lat, lng }) {
     let isOver = true;
     let data = ref();
@@ -45,14 +49,15 @@ export default class KakaoMap {
       // 맵 생성
       map = new kakao.maps.Map(document.getElementById("map"), {
         center: new kakao.maps.LatLng(lat, lng), // 지도의 중심좌표
-        level: 8, // 지도의 확대 레벨
+        level: 7, // 지도의 확대 레벨
+        maxLevel: 8
       });
 
       // 클러스터러 생성
       let clusterer = new kakao.maps.MarkerClusterer({
         map: map,
         averageCenter: true,
-        minLevel: 5, // level 5까지 클러스터러가 보인다.
+        minLevel: 4, // level 5까지 클러스터러가 보인다.
       });
 
       // 지도 확대 축소를 제어할 수 있는 줌 컨트롤을 생성합니다.
@@ -74,8 +79,7 @@ export default class KakaoMap {
           // 지금 6을 기준으로 나뉜다
           // 각 zoom 마다 좌표 범위를 설정하지 말고, 6을 기준으로 화면 전체에 해당하는 4개의 좌표 위치를 구한다
           // 이 범위 내에 있는 아파트들을 불러오자
-          let latlng = map.getCenter();  
-          console.log(latlng)
+          let latlng = map.getCenter();   
           data.value = await getAllApart({ lat: latlng.La, lng: latlng.Ma });
           isOver = false;
         }
@@ -84,7 +88,7 @@ export default class KakaoMap {
       // Custom overlays로 지도에 표시
       let customOverlays = data.value.map((position, index) => {
         return new kakao.maps.CustomOverlay({
-          content: clusterCss(position.size),
+          content: clusterCss(position.size, position.latitude, position.longitude),
           position: new kakao.maps.LatLng(position.latitude, position.longitude),
           map: map,
         });
@@ -95,15 +99,15 @@ export default class KakaoMap {
       // data가 바뀌면 마커를 다시 그려줍니다.
       watch(() => data.value, () => {
         clusterer.clear();
-
         let customOverlays = data.value.map((position, index) => {
+          // console.log(position)
           return new kakao.maps.CustomOverlay({
-            // content: position.size ? getContentNumber(position.size): getContentName(position.apart),
-            content: position.size ? clusterCss(position.size): getContentName(position.apart),
+            content: position.size ? clusterCss(position.size): getContentName(position.apart, position.dong),
             position: new kakao.maps.LatLng(position.latitude, position.longitude),
             map: map,
           });
         });
+
         clusterer.addMarkers(customOverlays);
       });
     });
@@ -171,13 +175,15 @@ const getContentNumber = (str) => {
 };
 
 /**
- * 이름
+ * 아파트 이름, 동을 함께 저장합니다.
  * @param {*} str 
  * @returns 
  */
-const getContentName = (str) => {
+const getContentName = (str, dong) => {
   return `
-  <div style="
+  <div 
+    data-dong=${dong} 
+    style="
     box-sizing: border-box;
     border-radius: 10%;
     /* height: 50px; */
@@ -198,10 +204,12 @@ const getContentName = (str) => {
  * @param {*} str 
  * @returns 
  */
-const clusterCss = (str) => {
+const clusterCss = (str, lat, lng) => {
   return `
-  <div style=
-  "cursor: pointer; 
+  <div 
+  data-lat=${lat}
+  data-lng=${lng} 
+  style="cursor: pointer; 
   width: 52px; 
   height: 52px; 
   line-height: 52px; 

@@ -60,7 +60,7 @@
       </div>
       <div class="text-gray-500 text-center mt-6">
         Already have an account?
-        <router-link to="/signin" class="border-b border-blue-500 text-blue">SIGN IN</router-link>
+        <router-link to="/" class="border-b border-blue-500 text-blue">SIGN IN</router-link>
       </div>
     </div>
   </div>
@@ -109,7 +109,7 @@ export default {
         };
         await authStore.signup(signupRequest);
         if(authState.signupError) return;
-        return router.push({ name: 'Home' });
+        return router.push({ name: 'Signin' });
       } catch (err) {
         console.error(err);
       }

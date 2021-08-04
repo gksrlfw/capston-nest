@@ -89,7 +89,6 @@ export default {
       // if(!currentApart.value) return;
       let arr = [], sum = 0;
       currentApart.value = currentAparts.value[0].value[0];
-      console.log('ㅁㄴㅇㄹㅁㄴㅇㄹ', currentAparts.value);
       currentAparts.value.map(apart => {
         sum = 0;
         apart.value.map(data => {

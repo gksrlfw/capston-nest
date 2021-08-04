@@ -60,12 +60,21 @@ export class ApartsController {
   }
   
   /**
-   *
+   * 동, 아파트 이름으로 아파트를 검색합니다.
    * @param apart
    */
   @Get('/search/apart')
   searchOneApart(@Query() input: { dong, apart }) {
     return this.apartsService.searchOneApart(input);
+  }
+  
+  /**
+   * 좌표로 구를 검색하고, 해당하는 구에 있는 아파트를 리턴합니다.
+   * @param input
+   */
+  @Get('/search/gu')
+  searchOneApartWithPosition(@Query() input: { lat, lng }) {
+    return this.apartsService.searchOneGuWithPosition(input);
   }
 
   /**

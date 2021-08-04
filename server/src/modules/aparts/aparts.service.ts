@@ -54,6 +54,10 @@ export class ApartsService {
    * 유저가 입력한 값에 해당하는 이름을 가진 아파트들만 추려서 보내줍니다.
    * '삼성'을 검색했을 때, '삼성래미안'은 '리버힐삼성'보다 앞에 보여야합니다.
    * 해당 글자가 있는 인덱스를 저장하여 이를 기준으로 정렬합니다.
+   *
+   * 최대 25개를 리턴합니다.
+   * 여러개의 아이파크가 연속으로 안나오는 이유: '아이'파크 보다 '아시'아선수촌이 더 순위가 높습니다...
+   * 모든 글자에 대해서 비교할 순 없으므로 방법이 필요합니다.
    * @param helper
    */
   async setSearchHelper(helper) {
@@ -63,7 +67,9 @@ export class ApartsService {
         })
         .filter(n => n !== undefined)
         .sort()
-        .map(n => n[1]);
+        .map(n => n[1])
+        .sort((a, b) => { return a.apart - b.apart })
+        .filter((_, i) => i < 25);
   }
   
   async searchOneApart({ dong, apart }) {
@@ -87,5 +93,11 @@ export class ApartsService {
     // Map to array
     return Array
       .from(map, ([area, value]) => ({ area, value }));
+  }
+  
+  async searchOneGuWithPosition({ lat, lng }) {
+    const guInfo = await this.apartRepository.query(`select * from gu where latitude=? and longitude=?`, [lat, lng]);
+    const aparts = await this.getAllAparts();
+    return aparts.filter(apart => apart.gu === guInfo[0].name);
   }
 }
