@@ -88,7 +88,8 @@ export default class KakaoMap {
       // Custom overlays로 지도에 표시
       let customOverlays = data.value.map((position, index) => {
         return new kakao.maps.CustomOverlay({
-          content: clusterCss(position.size, position.latitude, position.longitude),
+          // content: clusterCss(position.size, position.latitude, position.longitude),
+          content: position.size ? clusterCss(position.size): getContentName(position.apart, position.dong),
           position: new kakao.maps.LatLng(position.latitude, position.longitude),
           map: map,
         });
@@ -100,7 +101,6 @@ export default class KakaoMap {
       watch(() => data.value, () => {
         clusterer.clear();
         let customOverlays = data.value.map((position, index) => {
-          // console.log(position)
           return new kakao.maps.CustomOverlay({
             content: position.size ? clusterCss(position.size): getContentName(position.apart, position.dong),
             position: new kakao.maps.LatLng(position.latitude, position.longitude),

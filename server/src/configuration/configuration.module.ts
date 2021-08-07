@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { join } from 'path';
 
 // local 이거나 undefined 일 때만 false 여야합니다.
 const shouldIgnoreEnvFile = (): boolean => ![undefined, 'local'].includes(process.env.APP_ENV);
@@ -14,7 +15,7 @@ const shouldIgnoreEnvFile = (): boolean => ![undefined, 'local'].includes(proces
 const getEnvFilePath = (): string => ['.env', process.env.APP_ENV].filter((item) => item !== undefined).join('.');
 
 console.log(
-  `APP_ENV: ${process.env.APP_ENV}, shouldIgnoreEnvFile: ${shouldIgnoreEnvFile()}, getEnvFilePath: ${getEnvFilePath()}`,
+  `APP_ENV: ${process.env.APP_ENV}, shouldIgnoreEnvFile: ${shouldIgnoreEnvFile()}, getEnvFilePath: ${getEnvFilePath()}`,join(__dirname, '..', '..', getEnvFilePath())
 );
 
 @Module({
@@ -26,7 +27,8 @@ console.log(
       ignoreEnvFile: shouldIgnoreEnvFile(),
       // .env 를 기본값으로하며, APP_ENV 가 있는 경우, 그에 알맞는 .env.<APP_ENV> 파일을 사용합니다.ex) .env.dev
       // 단 local 의 경우는 .env 를 사용합니다.
-      envFilePath: getEnvFilePath(),
+      // envFilePath: join(__dirname, '..', '..', getEnvFilePath()),
+      envFilePath: getEnvFilePath()
     }),
   ],
 })

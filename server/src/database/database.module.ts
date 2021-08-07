@@ -13,12 +13,13 @@ import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
       useFactory: (configService: ConfigService): TypeOrmModuleOptions => {
         const appEnv = configService.get<string>('APP_ENV', 'local');
         const shouldDebug = appEnv !== 'prod';
-
+        
+        
         const databaseHostForMaster = configService.get<string>('DATABASE_HOST_MASTER', 'localhost');
         const databasePortForMaster = configService.get<number>('DATABASE_PORT_MASTER', 3306);
         const databaseUserForMaster = configService.get<string>('DATABASE_USER_MASTER', 'root');
         const databaseUserPasswordForMaster = configService.get<string>('DATABASE_USER_PASSWORD_MASTER', '');
-
+        console.log(appEnv, databaseHostForMaster)
         const databaseName = configService.get<string>('DATABASE_NAME', 'recommend');
 
         const shouldSynchronize = configService.get<boolean>('SHOULD_SYNCHRONIZE_DATABASE', false);

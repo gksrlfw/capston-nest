@@ -4,12 +4,20 @@ const CSVToJSON = require('csvtojson');
 const mysql = require('mysql2');
 const fs = require('fs');
 
+// const conn = {
+//   host: 'localhost',
+//   port: '3306',
+//   user: 'root',
+//   password: '',
+//   database: 'recommend'
+// }
+
 const conn = {
   host: 'localhost',
-  port: '3306',
+  port: '3311',
   user: 'root',
   password: '',
-  database: 'recommend'
+  database: 'sample'
 }
 
 const GUS = [
@@ -146,7 +154,7 @@ const GUS = [
 var connection = mysql.createConnection(conn); // DB 커넥션 생성
 connection.connect();   // DB 접속
 
-console.log(connection)
+// console.log(connection)
 /**
  * db에 넣기!
  */
@@ -180,7 +188,7 @@ function insertData() {
         
         if(!a.longitude || !a.latitude) continue;
         
-        var testQuery = `insert into recommend.apart(price, built_at, traded_at, dong, apart, latitude, longitude, floor, area, gu)
+        var testQuery = `insert into sample.apart(price, built_at, traded_at, dong, apart, latitude, longitude, floor, area, gu)
         values(${a.price}, ${a.built_at}, "${a.traded_at}", "${a.dong}", "${a.apart}", ${a.latitude}, ${a.longitude}, ${a.floor}, ${a.area}, "${a.gu}")`;
         console.log(testQuery);
         await pro(testQuery)
@@ -188,7 +196,7 @@ function insertData() {
       let i=0;
       for(let gu of GUS) {
         i++;
-        const guQuery = `insert into recommend.gu(name, latitude, longitude, size) values("${gu.name}", ${gu.latitude}, ${gu.longitude}, ${i});`;
+        const guQuery = `insert into sample.gu(name, latitude, longitude, size) values("${gu.name}", ${gu.latitude}, ${gu.longitude}, ${i});`;
         console.log(guQuery);
         await pro(guQuery);
       }
@@ -218,7 +226,7 @@ function getTime(date) {
           date.getDate()
 }
 
-// insertData();
+insertData();
 
 function setGuSize() {
 
