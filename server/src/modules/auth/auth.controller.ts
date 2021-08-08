@@ -58,6 +58,12 @@ export class AuthController {
   async signout(@User() user: UserDTO) {
     return user;
   }
+  
+  @UseGuards(JwtAuthGuard)
+  @Get('/mypage')
+  async getMypage(@User() user: UserDTO) {
+    return this.authService.getMypage(user);
+  }
 
 
   // 로그인이 필요한 작업은 JwtGuard를 통과해야 한다!

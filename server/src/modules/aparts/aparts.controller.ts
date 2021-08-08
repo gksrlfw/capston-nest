@@ -1,7 +1,8 @@
-import {BadRequestException, Body, Controller, Get, Post, Query} from '@nestjs/common';
+import {BadRequestException, Body, Controller, Get, Post, Query, UseGuards} from '@nestjs/common';
 import { ApartsService } from './aparts.service';
 import {Test} from "@nestjs/testing";
 import {IsString} from "class-validator";
+import {JwtAuthGuard} from "@common/guards/auth-jwt.guard";
 
 class TestClass {
   constructor(a, b) {
@@ -26,6 +27,7 @@ type TestType = {
 }
 
 @Controller('/')
+@UseGuards(JwtAuthGuard)
 export class ApartsController {
   constructor(private apartsService: ApartsService){}
   
@@ -47,8 +49,6 @@ export class ApartsController {
     return this.apartsService.getAllGus();
   }
 
-
-  
   /**
    * 유저가 실제로 엔터를 눌럿을 때 검색한 아파트를 보여줘야한다
    * 기본적인 아파트 정보를 보내주고, 맵의 좌표를 그곳으로 향하게 해줘야 한다

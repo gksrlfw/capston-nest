@@ -17,7 +17,6 @@ export default {
     onMounted(() => {
       authStore.refresh();
       authState.value = authStore.getAuthState();
-      console.log(authState.value.signin)
     });
     return {
       authState

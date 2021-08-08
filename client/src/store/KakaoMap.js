@@ -31,16 +31,18 @@ export default class KakaoMap {
     // zoom level을 설정합니다.
     map.setLevel(3);    
   }
-
-  // setApartsClickGu(data) {
-
-  // }
-
+  
+  /**
+   * 클러스터러 관련 설정입니다.
+   * @param lat
+   * @param lng
+   * @returns {Promise<void>}
+   */
   async addClusterer({ lat, lng }) {
     let isOver = true;
     let data = ref();
     data.value = await getAllGus();
-
+    if(!data.value || !data.value.length) return;
 
     /**
      * load가 된 이후에 모든 작업을 시작합니다.
@@ -124,7 +126,7 @@ export default class KakaoMap {
 async function getAllGus() {
   console.log('get All gu');
   const token = JSON.parse(sessionStorage.getItem(TOKEN));
-  if(!token) return;
+  if(!token) return alert('로그인이 필요합니다.');
   
   const headers = {
     Authorization: `TOKEN ${token}`

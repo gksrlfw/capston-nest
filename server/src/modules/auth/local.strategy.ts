@@ -22,9 +22,11 @@ export class LocalStrategy extends PassportStrategy(Strategy, 'local') {
   // passport would create user object auto in request
   async validate(email: string, password: string) {
     const user = await this.userRepository.findOne({ where: { email } });
-    if (!user || !(await user.comparePassword(password, user.salt))) {
+    if(!user) throw new BadRequestException('Check your email');
+    const salt = await user.comparePassword(password, user.salt);
+    if(salt !== user.password) {
       throw new UnauthorizedException(
-        'Invalid credentials in find user or compare password',
+        'Invalid credentials to find user or compare password',
       );
     }
     return user;

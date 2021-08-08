@@ -95,6 +95,7 @@ const createHashedPassword = (password): Promise<{ password: string, salt: strin
 const makePasswordHashed = (password, salt) => {
   return new Promise((res, rej) => {
     crypto.pbkdf2(password, salt, 9999, 64, 'sha512', (err, key) => {
+      console.log(err, key.toString('base64'))
       if(err) rej(err);
       res(key.toString('base64'));
     });

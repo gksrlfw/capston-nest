@@ -9,25 +9,26 @@ export class SearchStore {
   userInputApart = ref('');
   userInputGu = ref('');
   searchHelper = ref('');
-  currentAparts = ref([{    // 현재 선택된 아파트의 모든 거래 내역을 area, value로 받아옵니다.
-    area: "78.94",
-    value: [
-        {
-            id: 4285,
-            created: "2021-07-18T12:04:32.107Z",
-            updated: "2021-07-18T12:04:32.107Z",
-            price: 61800,
-            built_at: 2007,
-            traded_at: "2020-07-01T15:00:00.000Z",
-            dong: "면목동",
-            apart: "마젤란21",
-            latitude: "37.58686760",
-            longitude: "127.08412530",
-            floor: 8,
-            area: "78.94"
-        }
-    ]
-  }]);
+  currentAparts = ref('');
+  // currentAparts = ref([{    // 현재 선택된 아파트의 모든 거래 내역을 area, value로 받아옵니다.
+  //   area: "78.94",
+  //   value: [
+  //       {
+  //           id: 4285,
+  //           created: "2021-07-18T12:04:32.107Z",
+  //           updated: "2021-07-18T12:04:32.107Z",
+  //           price: 61800,
+  //           built_at: 2007,
+  //           traded_at: "2020-07-01T15:00:00.000Z",
+  //           dong: "면목동",
+  //           apart: "마젤란21",
+  //           latitude: "37.58686760",
+  //           longitude: "127.08412530",
+  //           floor: 8,
+  //           area: "78.94"
+  //       }
+  //   ]
+  // }]);
   currentApart = ref('');   // 현재 선택된 아파트 정보
 
   getSearchHelper() {
@@ -48,7 +49,14 @@ export class SearchStore {
   async setSearchHelper(userInput) {
     try {
       if(!userInput) return;
-      const response = await axios.get(`${BASE_URL}/search/helper?helper=${userInput}`);
+      const token = JSON.parse(sessionStorage.getItem(TOKEN));
+      if(!token) return alert('로그인이 필요합니다.');
+  
+      const headers = {
+        Authorization: `TOKEN ${token}`
+      };
+  
+      const response = await axios.get(`${BASE_URL}/search/helper?helper=${userInput}`, { headers });
       this.searchHelper.value = response.data;
     }
     catch(err) {
@@ -78,18 +86,31 @@ export class SearchStore {
    */
   async searchOneApart({ dong, apart }) {
     try {
-      const response = await axios.get(`${BASE_URL}/search/apart?apart=${apart}&dong=${dong}`);
+      if(!dong || !apart) return alert('동, 아파트 이름이 필요합니다.');
+      const token = JSON.parse(sessionStorage.getItem(TOKEN));
+      if(!token) return alert('로그인이 필요합니다.');
+  
+      const headers = {
+        Authorization: `TOKEN ${token}`
+      };
+      const response = await axios.get(`${BASE_URL}/search/apart?apart=${apart}&dong=${dong}`, { headers });
       this.currentAparts.value = response.data;
       this.currentApart.value = response.data[0].value[0];
     }
     catch(err) {
-      console.err(err);
+      console.error(err);
     }
   }
 
   async searchOneGuWithPosition({ lat, lng }){
     try {
-      const response = await axios.get(`${BASE_URL}/search/gu?lat=${lat}&lng=${lng}`);
+      const token = JSON.parse(sessionStorage.getItem(TOKEN));
+      if(!token) return alert('로그인이 필요합니다.');
+  
+      const headers = {
+        Authorization: `TOKEN ${token}`
+      };
+      const response = await axios.get(`${BASE_URL}/search/gu?lat=${lat}&lng=${lng}`, { headers });
       this.currentAparts.value = response.data;
     }
     catch(err) {

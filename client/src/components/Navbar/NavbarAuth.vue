@@ -17,24 +17,18 @@
         >
           <IconUser class="w-8 h-8" />
         </router-link>
-        <IconLogout class="w-8 h-8" @click="signout" v-else />
+        <div class="flex flex-row" v-else>
+          <IconBell class="w-8 h-8 mr-4" @click="getMypage"  />
+          <IconLogout class="w-8 h-8" @click="signout"  />
+        </div>
       </li>
-      <!-- <li class="md:ml-4">
-        <a class="border-t block no-underline hover:underline py-2 text-grey-darkest hover:text-black md:border-none md:p-0" href="#">
-          About
-        </a>
-      </li>
-      <li class="md:ml-4">
-        <a class="border-t block no-underline hover:underline py-2 text-grey-darkest hover:text-black md:border-none md:p-0" href="#">
-          Contact
-        </a>
-      </li> -->
     </ul>
   </nav>
 </template>
 <script>
 import IconUser from "@/components/Icons/IconUser";
 import IconLogout from "@/components/Icons/IconLogout";
+import IconBell from "@/components/Icons/IconBell";
 import authStore from "@/store/Auth";
 import { useRouter } from "vue-router";
 
@@ -42,6 +36,7 @@ export default {
   components: {
     IconUser,
     IconLogout,
+    IconBell
   },
   setup() {
     const router = new useRouter();
@@ -50,9 +45,15 @@ export default {
       await authStore.signout();
       return router.push({ name: "Signin" });
     }
+
+    function getMypage() {
+      console.log('my')
+      return router.push({ name: "Mypage" });
+    }
     return {
       authState,
       signout,
+      getMypage
     };
   },
 };

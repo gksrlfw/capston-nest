@@ -24,10 +24,8 @@ export class AuthStore {
   }
   async signup(signupRequest){
     try {
-      console.log(BASE_URL, signupRequest)
       const response = await axios.post(`${BASE_URL}/auth/signup`, signupRequest, axiosOptions);
-      console.log(response);
-      this.succeedSignup();
+      this.succeedSignup();   
     }
     catch(err) {
       console.error(err.response);
@@ -38,7 +36,6 @@ export class AuthStore {
   async signin(signinRequest) {
     try {
       const response = await axios.post(`${BASE_URL}/auth/signin`, signinRequest, axiosOptions);
-      console.log(response.data.data);
       this.succeedSignin(response.data.message);
       sessionStorage.setItem(TOKEN, JSON.stringify(response.data.data.token));
       sessionStorage.setItem(EMAIL, JSON.stringify(signinRequest.email));
@@ -79,12 +76,50 @@ export class AuthStore {
       }
       const response = await axios.get(`${BASE_URL}/auth/refresh`, { headers }, axiosOptions);
       this.succeedSignin(response.data.message);
-      console.log(response);
     }
     catch(err) {
       console.error(err.response);
       await this.signout();
       return alert(err.response.data.message);
+    }
+  }
+  
+  /**
+   * 회원탈퇴
+   * @returns {Promise<void>}
+   */
+  async unsubscribe(id) {
+    try {
+      const token = JSON.parse(sessionStorage.getItem(TOKEN));
+      if(!token) return;
+    
+      const headers = {
+        Authorization: `TOKEN ${token}`
+      }
+      const res = await axios.get(`${BASE_URL}/auth/unsubscribe`, { headers }, axiosOptions);
+      console.log(res)
+      this.clearState();
+      sessionStorage.removeItem(TOKEN);
+      sessionStorage.removeItem(EMAIL);
+    }
+    catch(err) {
+      console.error(err.message);
+    }
+  }
+  
+  async getMypage() {
+    try {
+      const token = JSON.parse(sessionStorage.getItem(TOKEN));
+      if(!token) return;
+    
+      const headers = {
+        Authorization: `TOKEN ${token}`
+      }
+      const res = await axios.get(`${BASE_URL}/auth/mypage`, { headers }, axiosOptions);
+      return res.data.data;
+    }
+    catch(err) {
+      console.error(err.message);
     }
   }
  

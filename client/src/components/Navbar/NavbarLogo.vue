@@ -2,7 +2,7 @@
   <!-- Logo text or image -->
   <div class="flex items-center justify-between md:mb-0 hidden md:block">
     <h1 class="leading-none text-2xl text-grey-darkest">
-      <a class="no-underline text-grey-darkest hover:text-black" href="#">
+      <a class="no-underline text-grey-darkest hover:text-black" >
         ZELA
       </a>
     </h1>
@@ -13,6 +13,20 @@
   </div>
 </template>
 <script>
-export default {};
+import Navbar from "@/components/Navbar/Navbar.vue";
+import { onMounted, ref } from "vue";
+import authStore from "@/store/Auth";
+
+export default {
+  setup() {
+    const authState = ref('');
+    onMounted(() => {
+      authState.value = authStore.getAuthState();
+    });
+    return {
+      authState
+    }
+  },
+};
 </script>
 <style lang=""></style>

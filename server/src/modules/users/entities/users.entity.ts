@@ -7,10 +7,10 @@ import { createHashedPassword, makePasswordHashed } from '@src/common/utilities/
 
 @Entity('user')
 export class UserEntity extends AbstractEntity {
-  @Column()
+  @Column({ unique: true })
   username: string;
 
-  @Column()
+  @Column({ unique: true })
   @IsEmail()
   email: string;
 
