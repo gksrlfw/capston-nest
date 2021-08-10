@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 /* eslint-disable no-undef */
 import { reactive, toRefs, ref } from "vue";
-import { BASE_URL, axiosOptions, TOKEN, EMAIL } from "@/store/Global";
+import { BASE_URL, TOKEN, EMAIL } from "@/store/Global";
 import axios from 'axios';
 
 export class SearchStore {

@@ -32,10 +32,6 @@ export class AuthService {
       const user = this.userRepository.create({ ...credentials, created: Time.now(), updated: Time.now() });
       await this.userRepository.save(user);
       return { ...user.toJSON() };
-      // create token => 딱히 회원가입할 때 토큰을 만들어 줄 필요는 없을 듯..
-      // const payload = { username: user.username };
-      // const token = this.jwtService.sign(payload);
-      // return { ...user.toJSON(), token };
     } catch (err) {
       if (err.code === '23505')
         throw new ConflictException('Username has already been taken');

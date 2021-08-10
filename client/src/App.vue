@@ -25,11 +25,4 @@ export default {
 };
 </script>
 <style lang="scss">
-#map {
-  margin-left: 30px;
-  margin-top: 10px;
-  width: 90%;
-  height: 500px;
-  align-content: center;
-}
 </style>

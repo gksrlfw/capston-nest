@@ -1,35 +1,35 @@
 <template>
 <div class="ml-10" v-if="currentApart">
-  <h1 class="mb-10 mt-9">
-    <div class="text-4xl">{{ currentApart.apart + " (" + currentApart.dong + ") " }}</div>
-    <small class="">built at {{ currentApart.built_at }}</small>
+  <h1 class="mb-10 mt-9 font-extrabold">
+    <div class="text-3xl text-gray-800 inline">{{ currentApart.apart + " (" + currentApart.dong + ") " }}</div>
+    <small class="text-gray-600">built at {{ currentApart.built_at }}</small>
   </h1>
   <section class="flex flex-row mb-10" >
     <div class="inline w-1/3">
-      <table class="table-fixed w-full border-collapse border-2 border-gray-500 mb-32">
+      <table class="table-fixed w-full border-collapse border-2 border-gray-200 mb-32">
         <thead>
-          <tr class="text-left p-10">
+          <tr class="text-left p-10 bg-gray-200">
             <th class="pl-2">전용면적</th>
             <th class="pl-2">평균 거래가</th>
           </tr>
         </thead>
-        <tbody v-for="value in currentDisplayValues" :key="value[0]" class="border-collapse border-2 border-gray-500">
+        <tbody v-for="value in currentDisplayValues" :key="value[0]" class="border-collapse border-2 border-gray-200">
           <td class="pl-2">{{value[0]}}</td>
           <td class="pl-2">{{calculatedWon(value[1])}}</td>
         </tbody>
       </table>
     </div>
-    <!-- <table class="table-fixed border-collapse border-2 border-gray-500 w-5/12 ml-10 mb-10 mt-9 h-1"> -->
-    <table class="table-fixed border-collapse border-2 border-gray-500 w-6/12 ml-10 h-1">
+    <!-- <table class="table-fixed border-collapse border-2 border-gray-200 w-5/12 ml-10 mb-10 mt-9 h-1"> -->
+    <table class="table-fixed border-collapse border-2 border-gray-200 w-6/12 ml-10 h-1">
       <thead>
-        <tr class="text-left p-10">
+        <tr class="text-left p-10 bg-gray-200">
           <th class="w-1/6 pl-2">전용면적</th>
           <th class="w-2/6 pl-2">가격</th>
           <th class="w-1/6 pl-2">층 수</th>
           <th class="w-2/6 pl-2">거래일자</th>
         </tr>
       </thead>
-      <tbody class="border-collapse border-2 border-gray-500" v-for="eachArea in currentAparts" :key="eachArea[0]">
+      <tbody class="border-collapse border-2 border-gray-200" v-for="eachArea in currentAparts" :key="eachArea[0]">
         <tr v-for="apart in eachArea.value" :key="apart.name">
           <td class="pl-2">{{ apart.area }}</td>
           <td class="pl-2">{{ calculatedWon(apart.price) }}</td>
@@ -40,7 +40,7 @@
     </table>
   </section>
 </div>
-  <h1 v-else class="mt-10 text-2xl" >검색창에 아파트 이름을 검색하거나 지도에서 원하는 아파트를 클릭해주세요.</h1>
+  <h1 v-else class="mt-10 text-2xl " >검색창에 아파트 이름을 검색하거나 지도에서 원하는 아파트를 클릭해주세요.</h1>
 </template>
 <script>
 import { onMounted, watch, ref } from "vue";
@@ -68,18 +68,25 @@ export default {
      * 평균 거래가를 계산합니다.
      */
     function calculatedAvg() {
-      if(!currentAparts.value) return;
-      let arr = [], sum = 0;
-      currentApart.value = currentAparts.value[0].value[0];
-      if(!currentApart.value) return;
-      currentAparts.value.map(apart => {
-        sum = 0;
-        apart.value.map(data => {
-          sum += Number(data.price);
+      try {
+        // console.log(currentAparts, currentApart.value);
+        if(!currentAparts) return;
+        if(!currentAparts.value) return;
+        let arr = [], sum = 0;
+        currentApart.value = currentAparts.value[0].value[0];
+        if(!currentApart.value) return;
+        currentAparts.value.map(apart => {
+          sum = 0;
+          apart.value.map(data => {
+            sum += Number(data.price);
+          });
+          arr.push([apart.area, Math.floor(sum/apart.value.length)]);
         });
-        arr.push([apart.area, Math.floor(sum/apart.value.length)]);
-      });
-      currentDisplayValues.value = arr;
+        currentDisplayValues.value = arr;
+      }
+      catch(err) {
+        console.error(err);
+      }
     }
 
     /**

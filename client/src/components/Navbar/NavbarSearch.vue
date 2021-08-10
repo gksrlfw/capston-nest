@@ -64,6 +64,10 @@ export default {
      * 무조건 이걸로 검색하도록 만드는게 편할것같다..
      */
     function search() {
+      if(tempUserInput.value === '해당하는 아파트가 존재하지 않습니다.') {
+        onPressEsc();
+        return;
+      }
       let [dong, apart] = tempUserInput.value.split(' ');
       if(!dong || !apart) return alert('검색창에서 선택해주세요.');
       dong = dong.substring(0, dong.length-1);
@@ -90,6 +94,7 @@ export default {
 
     async function onClickSearchHelper(e) {
       if(!e.target.textContent) return;
+      console.log(e.target.textContent)
       const arr = e.target.textContent.split(' ');
       const dong = arr[0].substring(1, arr[0].length).substring(0, arr[0].length-2);
       const apart = arr[1];
@@ -107,17 +112,17 @@ export default {
       searchHelperElements.value = Array.from(e.target.parentNode.nextSibling.childNodes[0].childNodes[0].childNodes).filter(list => list.nodeName === 'LI');
 
       if(searchHelperIndex.value === searchHelperElements.value.length) {
-        searchHelperElements.value[searchHelperIndex.value-1].classList.remove('bg-red-500');
+        searchHelperElements.value[searchHelperIndex.value-1].classList.remove('bg-gray-300');
         searchHelperIndex.value = 0;
       } 
       if(searchHelperIndex.value === 0) {
-        searchHelperElements.value[searchHelperIndex.value].classList.add('bg-red-500');
+        searchHelperElements.value[searchHelperIndex.value].classList.add('bg-gray-300');
         value = searchHelperElements.value[searchHelperIndex.value].textContent;
         searchHelperIndex.value = 1;
       }
       else {
-        searchHelperElements.value[searchHelperIndex.value-1].classList.remove('bg-red-500');
-        searchHelperElements.value[searchHelperIndex.value].classList.add('bg-red-500');
+        searchHelperElements.value[searchHelperIndex.value-1].classList.remove('bg-gray-300');
+        searchHelperElements.value[searchHelperIndex.value].classList.add('bg-gray-300');
         value = searchHelperElements.value[searchHelperIndex.value].textContent;
         searchHelperIndex.value += 1;
       }
@@ -126,26 +131,29 @@ export default {
     }
     /**
      * 포커스를 한 칸 위로 올립니다.
+     * TODO: 없을때 에러발생...
      */
     function onKeyUp(e) {
       let value = '';
+      
       if(!e?.target || !e?.target?.parentNode || !e?.target?.parentNode?.nextSibling || !e?.target?.parentNode?.nextSibling?.childNodes || !e.target.parentNode?.nextSibling?.childNodes[0]?.childNodes || !e.target.parentNode.nextSibling.childNodes[0]?.childNodes[0]?.childNodes) return;
       searchHelperElements.value = Array.from(e.target.parentNode.nextSibling.childNodes[0].childNodes[0].childNodes).filter(list => list.nodeName === 'LI');
 
+      if(searchHelperIndex.value >= searchHelperElements.value.length) return;
       if(searchHelperIndex.value === searchHelperElements.value.length) {
-        searchHelperElements.value[searchHelperIndex.value].classList.remove('bg-red-500');
+        searchHelperElements.value[searchHelperIndex.value].classList.remove('bg-gray-300');
         searchHelperIndex.value = searchHelperElements.value.length-1;
       } 
       if(searchHelperIndex.value === 0) {
-        searchHelperElements.value[searchHelperIndex.value].classList.remove('bg-red-500');
+        searchHelperElements.value[searchHelperIndex.value].classList.remove('bg-gray-300');
         searchHelperIndex.value = searchHelperElements.value.length - 1;
-        searchHelperElements.value[searchHelperIndex.value].classList.add('bg-red-500');
+        searchHelperElements.value[searchHelperIndex.value].classList.add('bg-gray-300');
         value = searchHelperElements.value[searchHelperIndex.value].textContent;
       }
       else {
-        searchHelperElements.value[searchHelperIndex.value].classList.remove('bg-red-500');
+        searchHelperElements.value[searchHelperIndex.value].classList.remove('bg-gray-300');
         searchHelperIndex.value -= 1;
-        searchHelperElements.value[searchHelperIndex.value].classList.add('bg-red-500');
+        searchHelperElements.value[searchHelperIndex.value].classList.add('bg-gray-300');
         value = searchHelperElements.value[searchHelperIndex.value].textContent;
       }
 

@@ -2,8 +2,9 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 /* eslint-disable no-undef */
 import { reactive, toRefs } from "vue";
-import { BASE_URL, axiosOptions, TOKEN, EMAIL } from "@/store/Global";
+import { BASE_URL, TOKEN, EMAIL } from "@/store/Global";
 import axios from 'axios';
+import router from '@/router/index';
 
 export class AuthStore {
   authState = reactive({
@@ -13,6 +14,8 @@ export class AuthStore {
     isSignup: false,
     signinResponse: {},
   });
+  
+
 
   getAuthState() {
     return this.authState;
@@ -24,7 +27,7 @@ export class AuthStore {
   }
   async signup(signupRequest){
     try {
-      const response = await axios.post(`${BASE_URL}/auth/signup`, signupRequest, axiosOptions);
+      const response = await axios.post(`${BASE_URL}/auth/signup`, signupRequest);
       this.succeedSignup();   
     }
     catch(err) {
@@ -35,7 +38,7 @@ export class AuthStore {
 
   async signin(signinRequest) {
     try {
-      const response = await axios.post(`${BASE_URL}/auth/signin`, signinRequest, axiosOptions);
+      const response = await axios.post(`${BASE_URL}/auth/signin`, signinRequest);
       this.succeedSignin(response.data.message);
       sessionStorage.setItem(TOKEN, JSON.stringify(response.data.data.token));
       sessionStorage.setItem(EMAIL, JSON.stringify(signinRequest.email));
@@ -55,7 +58,7 @@ export class AuthStore {
       const headers = {
         Authorization: `TOKEN ${token}`
       }
-      await axios.get(`${BASE_URL}/auth/signout`, { headers }, axiosOptions);
+      await axios.get(`${BASE_URL}/auth/signout`, { headers });
       this.clearState();
       sessionStorage.removeItem(TOKEN);
       sessionStorage.removeItem(EMAIL);
@@ -74,13 +77,14 @@ export class AuthStore {
       const headers = {
         Authorization: `TOKEN ${token}`
       }
-      const response = await axios.get(`${BASE_URL}/auth/refresh`, { headers }, axiosOptions);
+      const response = await axios.get(`${BASE_URL}/auth/refresh`, { headers });
       this.succeedSignin(response.data.message);
     }
     catch(err) {
       console.error(err.response);
       await this.signout();
-      return alert(err.response.data.message);
+      alert(err.response.data.message);
+      return router.push({ name: "Signin" });
     }
   }
   
@@ -96,7 +100,7 @@ export class AuthStore {
       const headers = {
         Authorization: `TOKEN ${token}`
       }
-      const res = await axios.get(`${BASE_URL}/auth/unsubscribe`, { headers }, axiosOptions);
+      const res = await axios.get(`${BASE_URL}/auth/unsubscribe`, { headers });
       console.log(res)
       this.clearState();
       sessionStorage.removeItem(TOKEN);
@@ -115,7 +119,7 @@ export class AuthStore {
       const headers = {
         Authorization: `TOKEN ${token}`
       }
-      const res = await axios.get(`${BASE_URL}/auth/mypage`, { headers }, axiosOptions);
+      const res = await axios.get(`${BASE_URL}/auth/mypage`, { headers });
       return res.data.data;
     }
     catch(err) {

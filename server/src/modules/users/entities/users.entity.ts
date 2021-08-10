@@ -1,5 +1,5 @@
 import { classToPlain, Exclude } from 'class-transformer';
-import { IsEmail, IsString } from 'class-validator';
+import {IsEmail, IsNumber, IsString} from 'class-validator';
 import { AbstractEntity } from 'src/common/entities/abstract.entity';
 import { BeforeInsert, Column, Entity } from 'typeorm';
 import { createHashedPassword, makePasswordHashed } from '@src/common/utilities/cipher';
@@ -14,12 +14,12 @@ export class UserEntity extends AbstractEntity {
   @IsEmail()
   email: string;
 
-  @Column({ nullable: true })
+  @Column()
   @Exclude()
   @IsString()
   password: string;
 
-  @Column({ nullable: true })
+  @Column()
   @Exclude()
   @IsString()
   salt: string;
@@ -31,6 +31,10 @@ export class UserEntity extends AbstractEntity {
   @IsString()
   @Column()
   address: string;
+  
+  @IsNumber()
+  @Column({ nullable: true })
+  age: number;
   
   @BeforeInsert()
   async hashPassword() {

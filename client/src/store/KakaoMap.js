@@ -3,7 +3,7 @@
 /* eslint-disable no-undef */
 // import { positions } from "@/../samples";
 import axios from 'axios';
-import { BASE_URL, axiosOptions, TOKEN, EMAIL } from "@/store/Global";
+import { BASE_URL, TOKEN, EMAIL } from "@/store/Global";
 import { reactive, toRefs, ref, watch } from "vue";
 
 let map;
@@ -124,7 +124,6 @@ export default class KakaoMap {
  * @returns 
  */
 async function getAllGus() {
-  console.log('get All gu');
   const token = JSON.parse(sessionStorage.getItem(TOKEN));
   if(!token) return alert('로그인이 필요합니다.');
   
@@ -132,7 +131,7 @@ async function getAllGus() {
     Authorization: `TOKEN ${token}`
   };
 
-  const response = await axios.get(`${BASE_URL}/map/gus`, { headers }, axiosOptions);
+  const response = await axios.get(`${BASE_URL}/map/gus`, { headers });
   return response.data;
 }
 
@@ -140,7 +139,6 @@ async function getAllGus() {
  * 모든 아파트를 가져옵니다. 원래는 현재 위치에서 일정 범위 이내의 값을 계속해서 로드할 생각이었지만 귀찮아졌습니다.
  */
 async function getAllApart({ lat, lng }) {
-  console.log('get All apart');
   const token = JSON.parse(sessionStorage.getItem(TOKEN));
   if(!token) return;
   
@@ -153,7 +151,7 @@ async function getAllApart({ lat, lng }) {
     longitude: lng
   };
 
-  const response = await axios.get(`${BASE_URL}/map/aparts`, { headers, body }, axiosOptions);
+  const response = await axios.get(`${BASE_URL}/map/aparts`, { headers, body });
   return response.data;
 }
 

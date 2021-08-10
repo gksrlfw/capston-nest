@@ -1,29 +1,50 @@
 <template lang="">
-  <nav class="md:block hidden">
-    <ul class="list-reset md:flex md:items-center">
-      <li class="md:ml-4">
-        <router-link
-          v-if="!authState.isSignin"
-          to="/"
-          class="
-            block
-            no-underline
-            hover:underline
-            py-2
-            text-grey-darkest
-            hover:text-black
-            md:border-none md:p-0
-          "
-        >
-          <IconUser class="w-8 h-8" />
-        </router-link>
-        <div class="flex flex-row" v-else>
-          <IconBell class="w-8 h-8 mr-4" @click="getMypage"  />
-          <IconLogout class="w-8 h-8" @click="signout"  />
-        </div>
-      </li>
-    </ul>
-  </nav>
+  <router-link
+    v-if="!authState.isSignin"
+    to="/"
+    class="
+      block
+      no-underline
+      hover:underline
+      py-2
+      text-grey-darkest
+      hover:text-black
+      md:border-none md:p-0
+    "
+  >
+    <IconUser class="w-8 h-8" />
+  </router-link>
+  <div class="flex flex-row" v-else>
+    <router-link
+      to="/mypage"
+      class="
+        block
+        no-underline
+        hover:underline
+        py-2
+        text-grey-darkest
+        hover:text-black
+        md:border-none md:p-0
+        mr-2
+      "
+    >
+      <IconBell class="w-8 h-8 " />        
+    </router-link>
+    <router-link
+      to="/"
+      class="
+        block
+        no-underline
+        hover:underline
+        py-2
+        text-grey-darkest
+        hover:text-black
+        md:border-none md:p-0
+      "
+    >
+      <IconLogout class="w-8 h-8" @click="signout" />
+    </router-link>
+  </div>
 </template>
 <script>
 import IconUser from "@/components/Icons/IconUser";
@@ -43,11 +64,10 @@ export default {
     const authState = authStore.getAuthState();
     async function signout() {
       await authStore.signout();
-      return router.push({ name: "Signin" });
+      // return router.push({ name: "Signin" });
     }
 
     function getMypage() {
-      console.log('my')
       return router.push({ name: "Mypage" });
     }
     return {

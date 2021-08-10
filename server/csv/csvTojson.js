@@ -17,7 +17,7 @@ const conn = {
   port: '3311',
   user: 'root',
   password: '',
-  database: 'sample'
+  database: 'recommend'
 }
 
 const GUS = [
@@ -188,7 +188,7 @@ function insertData() {
         
         if(!a.longitude || !a.latitude) continue;
         
-        var testQuery = `insert into sample.apart(price, built_at, traded_at, dong, apart, latitude, longitude, floor, area, gu)
+        var testQuery = `insert into recommend.apart(price, built_at, traded_at, dong, apart, latitude, longitude, floor, area, gu)
         values(${a.price}, ${a.built_at}, "${a.traded_at}", "${a.dong}", "${a.apart}", ${a.latitude}, ${a.longitude}, ${a.floor}, ${a.area}, "${a.gu}")`;
         console.log(testQuery);
         await pro(testQuery)
@@ -196,7 +196,7 @@ function insertData() {
       let i=0;
       for(let gu of GUS) {
         i++;
-        const guQuery = `insert into sample.gu(name, latitude, longitude, size) values("${gu.name}", ${gu.latitude}, ${gu.longitude}, ${i});`;
+        const guQuery = `insert into recommend.gu(name, latitude, longitude, size) values("${gu.name}", ${gu.latitude}, ${gu.longitude}, ${i});`;
         console.log(guQuery);
         await pro(guQuery);
       }
