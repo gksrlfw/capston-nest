@@ -161,7 +161,7 @@ connection.connect();   // DB 접속
 // convert users.csv file to JSON array
 function insertData() {
   CSVToJSON()
-    .fromFile('data_gu.csv')
+    .fromFile('data2.csv')
     .then(async users => {
       for(let a of users) {
         const arr = a.price.split(',');

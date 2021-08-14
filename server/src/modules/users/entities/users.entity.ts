@@ -23,18 +23,14 @@ export class UserEntity extends AbstractEntity {
   @Exclude()
   @IsString()
   salt: string;
-
-  @IsString()
-  @Column()
-  gu: string;
-
-  @IsString()
-  @Column()
-  address: string;
   
   @IsNumber()
-  @Column({ nullable: true })
+  @Column()
   age: number;
+  
+  @IsString()
+  @Column()
+  gender: string
   
   @BeforeInsert()
   async hashPassword() {

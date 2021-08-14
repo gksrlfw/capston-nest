@@ -3,6 +3,9 @@ import { ApartsService } from './aparts.service';
 import {Test} from "@nestjs/testing";
 import {IsString} from "class-validator";
 import {JwtAuthGuard} from "@common/guards/auth-jwt.guard";
+import axios from "axios";
+import {User} from "@common/decorators/user.decorator";
+import {UserEntity} from "@src/modules/users/entities/users.entity";
 
 class TestClass {
   constructor(a, b) {
@@ -61,10 +64,15 @@ export class ApartsController {
   
   /**
    * 동, 아파트 이름으로 아파트를 검색합니다.
+   * 모든 검색은 이를 통합니다. 여기서 데이터를 플라스크 서버로 전송해줍시다.
    * @param apart
    */
   @Get('/search/apart')
-  searchOneApart(@Query() input: { dong, apart }) {
+  searchOneApart(@Query() input: { dong, apart }, @User() user: UserEntity) {
+    // 나이, 성별, 평형, 가격, 지역
+    console.log(user);
+    // axios.get('', );
+    this.apartsService.sendInfoForRecommendation({ dong: input.dong, apart: input.apart, user });
     return this.apartsService.searchOneApart(input);
   }
   

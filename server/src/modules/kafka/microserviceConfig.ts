@@ -12,4 +12,4 @@ export const microserviceConfig: KafkaOptions = {
       allowAutoTopicCreation: true,
     },
   }
-};
+}

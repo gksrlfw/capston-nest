@@ -2,11 +2,16 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ApartEntity } from './entities/apart.entity';
+import {UserEntity} from "@src/modules/users/entities/users.entity";
+import axios from "axios";
 
 @Injectable()
 export class ApartsService {
 
-  constructor(@InjectRepository(ApartEntity) private apartRepository: Repository<ApartEntity>) {}
+  constructor(
+    @InjectRepository(ApartEntity) private apartRepository: Repository<ApartEntity>,
+    @InjectRepository(UserEntity) private userRepository: Repository<UserEntity>,
+  ) {}
   
   /**
    * 아파트 위치를 기준으로 서로다른 아파트만 리턴합니다.
@@ -99,5 +104,25 @@ export class ApartsService {
     const guInfo = await this.apartRepository.query(`select * from gu where latitude=? and longitude=?`, [lat, lng]);
     const aparts = await this.getAllAparts();
     return aparts.filter(apart => apart.gu === guInfo[0].name);
+  }
+  
+  /**
+   * dong, apart, user 정보를 전송합니다.
+   */
+  async sendInfoForRecommendation({ dong, apart, user }) {
+    try {
+      const userInfo = await this.userRepository.findOne({ id: user.id });
+      const apartInfo = (await this.apartRepository.query(`select * from apart where dong = ? and apart = ? limit 1`, [dong, apart]))[0];
+      const dto = {
+        ...apartInfo,
+        ...userInfo
+      }
+      // flask 서버로 보낸다
+      // await axios.post('', { body: dto });
+    }
+    catch(err) {
+      console.error(err);
+    }
+    
   }
 }

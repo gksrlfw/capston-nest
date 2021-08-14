@@ -32,23 +32,24 @@
           name="confirm_password"
           placeholder="CONFIRM PASSWORD"
           v-model="confirmPassword"
-        />
+        />  
         <input
           type="text"
           class="border border-gray-300 w-full p-3 rounded mb-4"
-          name="gu"
-          placeholder="gu"
-          v-model="gu"
+          name="age"
+          placeholder="AGE"
+          v-model="age"
         />
         <input
           type="test"
           class="border border-gray-300 w-full p-3 rounded mb-4"
-          name="address"
-          placeholder="address"
-          v-model="address"
+          name="gender"
+          placeholder="GENDER: 남자 또는 여자"
+          v-model="gender"
         />
         <div class="mb-2 text-red-500 font-bold" v-if="isEmptyValue">FILL IN ALL VALUE!</div>
         <div class="mb-2 text-red-500 font-bold" v-if="isMatchedPassword">CHECK YOUR PASSWORD!</div>
+        <div class="mb-2 text-red-500 font-bold" v-if="isGenderOk">CHECK YOUR GENDER!</div>
         <div class="mb-2 text-red-500 font-bold" v-if="authState.signupError">{{ authState.signupError }}</div>
         <!-- outline 없애기 (어디서 들어오는거지??)-->
         <button
@@ -76,21 +77,28 @@ export default {
     const username = ref('123');
     const password = ref('testtest');
     const confirmPassword = ref('testtest');
-    const gu = ref('강남구');
-    const address = ref('역삼로 3-6 11길 조이빌');
+    const age = ref(21);
+    const gender = ref('남자');
     const isEmptyValue = ref(false);
     const isMatchedPassword = ref(false);
+    const isGenderOk = ref(false);
     const authState = authStore.getAuthState();
+
     function checkValidation() {
       authStore.clearError();
       isMatchedPassword.value = false;
       isEmptyValue.value = false;
-      if (!email.value || !username.value || !password.value || !confirmPassword.value || !gu.value || !address.value) {
+      isGenderOk.value = false;
+      if (!email.value || !username.value || !password.value || !confirmPassword.value || !age.value || !gender.value) {
         isEmptyValue.value = true;
         return false;
       }
       if (password.value !== confirmPassword.value) {
         isMatchedPassword.value = true;
+        return false;
+      }
+      if(gender.value !== '남자' && gender.value !== '여자') {
+        isGenderOk.value = true;
         return false;
       }
       return true;
@@ -103,8 +111,8 @@ export default {
             email: email.value, 
             username: username.value, 
             password: password.value,
-            gu: gu.value,
-            address: address.value
+            age: age.value,
+            gender: gender.value
           }
         };
         await authStore.signup(signupRequest);
@@ -123,8 +131,9 @@ export default {
       isEmptyValue,
       isMatchedPassword,
       authState,
-      gu,
-      address
+      age,
+      gender,
+      isGenderOk
     };
   },
 };
