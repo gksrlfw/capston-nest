@@ -4,6 +4,8 @@ import { Repository } from 'typeorm';
 import { ApartEntity } from './entities/apart.entity';
 import {UserEntity} from "@src/modules/users/entities/users.entity";
 import axios from "axios";
+import {ClickLogEntity} from "@src/modules/users/entities/click-log.entity";
+import Time from "@common/time";
 
 @Injectable()
 export class ApartsService {
@@ -11,6 +13,7 @@ export class ApartsService {
   constructor(
     @InjectRepository(ApartEntity) private apartRepository: Repository<ApartEntity>,
     @InjectRepository(UserEntity) private userRepository: Repository<UserEntity>,
+    @InjectRepository(ClickLogEntity) private clickLogRepository: Repository<ClickLogEntity>,
   ) {}
   
   /**
@@ -119,6 +122,15 @@ export class ApartsService {
       }
       // flask 서버로 보낸다
       // await axios.post('', { body: dto });
+      
+      const clickLog = this.clickLogRepository.create({
+        userId: userInfo.id,
+        apartId: apartInfo.id,
+        created: Time.now(),
+        updated: Time.now(),
+      });
+      await this.clickLogRepository.save(clickLog);
+      console.log('insert log: ', userInfo.id, apartInfo.id);
     }
     catch(err) {
       console.error(err);

@@ -20,6 +20,14 @@ const conn = {
   database: 'recommend'
 }
 
+// const conn = {
+//   host: '4.tcp.ngrok.io',
+//   port: '14491',
+//   user: 'root',
+//   password: '',
+//   database: 'recommend'
+// }
+
 const GUS = [
   {
     name: '종로구',
@@ -226,7 +234,7 @@ function getTime(date) {
           date.getDate()
 }
 
-insertData();
+// insertData();
 
 function setGuSize() {
 
