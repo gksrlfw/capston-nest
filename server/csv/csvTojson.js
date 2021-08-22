@@ -1,24 +1,26 @@
 // https://attacomsian.com/blog/nodejs-convert-csv-to-json
 // require csvtojson module
+const dayjs = require('dayjs');
 const CSVToJSON = require('csvtojson');
 const mysql = require('mysql2');
 const fs = require('fs');
-
-// const conn = {
-//   host: 'localhost',
-//   port: '3306',
-//   user: 'root',
-//   password: '',
-//   database: 'recommend'
-// }
+const faker = require('faker');
 
 const conn = {
   host: 'localhost',
-  port: '3311',
+  port: '3306',
   user: 'root',
   password: '',
   database: 'recommend'
 }
+
+// const conn = {
+//   host: 'localhost',
+//   port: '3311',
+//   user: 'root',
+//   password: '',
+//   database: 'recommend'
+// }
 
 // const conn = {
 //   host: '4.tcp.ngrok.io',
@@ -234,8 +236,52 @@ function getTime(date) {
           date.getDate()
 }
 
-// insertData();
 
-function setGuSize() {
 
+
+async function user() {
+  for(let i=0; i<990; i++) {
+    const email = faker.unique(faker.internet.email);
+    const password = faker.internet.password();
+    const salt = faker.internet.password();
+    const firstname = faker.unique(faker.name.firstName);
+    const gender = i%2===0 ? '남자' : '여자';
+    const age = getRandomInt(20, 50);
+    // const created = dayjs().format();
+    // const updated = dayjs()
+    console.log(email, password, firstname, gender, age);
+    let str = `
+    Insert into recommend.user(email, password, username, salt, age, gender)
+    values(
+              "${email}",
+              "${password}",
+              "${firstname}",
+              "${salt}",
+              ${age},
+              "${gender}"
+          )
+  `;
+    await pro(str);
+  }
+}
+
+function getRandomInt(min, max) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min)) + min; //최댓값은 제외, 최솟값은 포함
+}
+
+
+// insertData()
+user();
+
+async function log() {
+  for(let i=1; i<991; i++) {
+    for(let j=1; j<=10; j++) {
+      let str = `
+      insert into recommend.click_log(user_id, apart_id)
+      values(${i}, ${j})
+      `
+    }
+  }
 }

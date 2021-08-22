@@ -40,7 +40,7 @@ import {onMounted, ref} from "vue";
 import authStore from "@/store/Auth";
 export default {
   setup() {
-    const mypageData = ref('');
+    const mypageData = ref('')
     onMounted(async () => {
       mypageData.value = await authStore.getMypage();
       console.log(mypageData.value)

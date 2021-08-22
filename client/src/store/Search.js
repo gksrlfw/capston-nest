@@ -117,6 +117,20 @@ export class SearchStore {
       console.error(err);
     }
   }
+
+  async getApartsWithIds(ids) {
+    try {
+      console.log(ids);
+      const response = await axios.post(`${BASE_URL}/search/aparts/ids`, { 
+        ids
+      });
+      console.log(response.data);
+      return response.data;
+    }
+    catch(err) {
+      console.error(err);
+    }
+  }
 }
 
 const searchStore = new SearchStore();

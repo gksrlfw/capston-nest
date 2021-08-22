@@ -18,12 +18,14 @@ export abstract class AbstractEntity extends BaseEntity {
   @Transform(({ value }) => value.toString())
   @CreateDateColumn({
     transformer: DateColumnTransformer,
+    nullable: true
   })
-  created: Time;
+  created: Time
 
   @Transform(({ value }) => value.toString())
   @UpdateDateColumn({
     transformer: DateColumnTransformer,
+    nullable: true
   })
   updated: Time;
 }

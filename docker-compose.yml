@@ -39,7 +39,7 @@ services:
       - SYS_NICE
     environment:
       MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
-      MYSQL_DATABASE: 'sample'
+      MYSQL_DATABASE: 'recommend'
       TZ: 'Asia/Seoul'
     ports:
       - '3311:3306'

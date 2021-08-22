@@ -38,6 +38,7 @@
     "cli-color": "^2.0.0",
     "dataloader": "^2.0.0",
     "dayjs": "^1.10.4",
+    "faker": "^5.5.3",
     "firebase-admin": "^9.8.0",
     "graphql": "^15.5.0",
     "graphql-tools": "^7.0.5",

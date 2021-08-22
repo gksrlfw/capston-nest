@@ -114,15 +114,15 @@ export class ApartsService {
    */
   async sendInfoForRecommendation({ dong, apart, user }) {
     try {
+      console.log('sendInfoForRecommendation...', user)
       const userInfo = await this.userRepository.findOne({ id: user.id });
       const apartInfo = (await this.apartRepository.query(`select * from apart where dong = ? and apart = ? limit 1`, [dong, apart]))[0];
-      const dto = {
-        ...apartInfo,
-        ...userInfo
-      }
-      // flask 서버로 보낸다
-      // await axios.post('', { body: dto });
       
+  
+      // flask 서버로 보낸다
+      const recommend = await axios.get(`https://0103-1-231-217-180.ngrok.io/recommend/1`);
+      console.log(recommend.data);
+
       const clickLog = this.clickLogRepository.create({
         userId: userInfo.id,
         apartId: apartInfo.id,
@@ -131,10 +131,17 @@ export class ApartsService {
       });
       await this.clickLogRepository.save(clickLog);
       console.log('insert log: ', userInfo.id, apartInfo.id);
+
+      return recommend.data;  
     }
     catch(err) {
       console.error(err);
     }
-    
+  }
+
+  async searchApartsWithIds(ids: number[]) {
+    return this.apartRepository.findByIds(ids, {
+      take: 5,
+    });
   }
 }

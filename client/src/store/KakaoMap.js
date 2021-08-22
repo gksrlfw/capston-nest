@@ -3,7 +3,7 @@
 /* eslint-disable no-undef */
 // import { positions } from "@/../samples";
 import axios from 'axios';
-import { BASE_URL, TOKEN, EMAIL } from "@/store/Global";
+import { BASE_URL, TOKEN, EMAIL, RECOMMEND_LISTS } from "@/store/Global";
 import { reactive, toRefs, ref, watch } from "vue";
 
 let map;
@@ -132,7 +132,11 @@ async function getAllGus() {
   };
 
   const response = await axios.get(`${BASE_URL}/map/gus`, { headers });
-  return response.data;
+  RECOMMEND_LISTS.value = response.data?.recommendLists?.prediction;
+  console.log(response.data)
+  // console.log(RECOMMEND_LISTS)
+  // { gus, recommendLists };
+  return response.data.gus;
 }
 
 /**

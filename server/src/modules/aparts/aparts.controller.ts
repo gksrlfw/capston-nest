@@ -30,8 +30,8 @@ type TestType = {
 }
 
 @Controller('/')
-@UseGuards(JwtAuthGuard)
 export class ApartsController {
+  private recommendLists = {};
   constructor(private apartsService: ApartsService){}
   
   @Post('/map/test')
@@ -48,8 +48,12 @@ export class ApartsController {
   }
 
   @Get('/map/gus')
-  getAllGus() {
-    return this.apartsService.getAllGus();
+  async getAllGus() {
+    console.log(this.recommendLists)
+    return {
+      gus: await this.apartsService.getAllGus(),
+      recommendLists: await this.recommendLists
+    }
   }
 
   /**
@@ -57,9 +61,19 @@ export class ApartsController {
    * 기본적인 아파트 정보를 보내주고, 맵의 좌표를 그곳으로 향하게 해줘야 한다
    * @param apart
    */
-  @Get('/search/aparts')
-  searchApart(@Query('apart') apart: string) {
-    console.log(apart);
+   @Get('/search/aparts')
+   searchApart(@Query('apart') apart: string) {
+     console.log(apart);
+   }
+
+   /**
+    * recommend =-> ids 로 아파트를 검색합니다.
+    * @param apart 
+    */
+  @Post('/search/aparts/ids')
+  searchApartsWithIds(@Body('ids') ids: number[]) {
+    if(!ids || !ids.length) return;
+    return this.apartsService.searchApartsWithIds(ids);
   }
   
   /**
@@ -68,11 +82,15 @@ export class ApartsController {
    * @param apart
    */
   @Get('/search/apart')
-  searchOneApart(@Query() input: { dong, apart }, @User() user: UserEntity) {
+  @UseGuards(JwtAuthGuard)
+  async searchOneApart(@Query() input: { dong, apart }, @User() user: UserEntity) {
     // 나이, 성별, 평형, 가격, 지역
-    console.log(user);
-    // axios.get('', );
-    this.apartsService.sendInfoForRecommendation({ dong: input.dong, apart: input.apart, user });
+    // const user = {
+    //   email: "test@naver.com",
+    //   id: 1
+    // }
+    console.log('searchOneApart', user);
+    this.recommendLists = this.apartsService.sendInfoForRecommendation({ dong: input.dong, apart: input.apart, user });
     return this.apartsService.searchOneApart(input);
   }
   
