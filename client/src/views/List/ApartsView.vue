@@ -69,7 +69,7 @@ export default {
      */
     function calculatedAvg() {
       try {
-        // console.log(currentAparts, currentApart.value);
+        console.log(currentApart.value, currentAparts.value);
         if(!currentAparts) return;
         if(!currentAparts.value) return;
         let arr = [], sum = 0;

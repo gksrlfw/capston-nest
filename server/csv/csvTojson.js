@@ -6,21 +6,21 @@ const mysql = require('mysql2');
 const fs = require('fs');
 const faker = require('faker');
 
-const conn = {
-  host: 'localhost',
-  port: '3306',
-  user: 'root',
-  password: '',
-  database: 'recommend'
-}
-
 // const conn = {
 //   host: 'localhost',
-//   port: '3311',
+//   port: '3306',
 //   user: 'root',
 //   password: '',
 //   database: 'recommend'
 // }
+
+const conn = {
+  host: 'localhost',
+  port: '3311',
+  user: 'root',
+  password: '',
+  database: 'recommend'
+}
 
 // const conn = {
 //   host: '4.tcp.ngrok.io',
@@ -273,15 +273,28 @@ function getRandomInt(min, max) {
 
 
 // insertData()
-user();
+// user();
 
 async function log() {
-  for(let i=1; i<991; i++) {
-    for(let j=1; j<=10; j++) {
-      let str = `
-      insert into recommend.click_log(user_id, apart_id)
-      values(${i}, ${j})
-      `
+  const gus = await pro('select * from gu');
+  
+  const users = await pro(`select * from user`);
+  let guIndex = 0;
+  for(let i=0; i<users.length; i++) {
+  // for(let )
+    if(guIndex>24) guIndex=0;
+    const gu = gus[guIndex];
+    guIndex+=1;
+    const aparts = await pro(`select * from apart where gu="${gu.name}"`);
+    if(aparts.length === 0) continue;
+    let randomIndex = 0;
+    while(randomIndex < 10) {
+      const randomApartIndex = Math.floor(Math.random() * aparts.length);
+      const query = `insert into recommend.click_log(user_id, apart_id) values(${users[i].id}, ${aparts[randomApartIndex].id})`;
+      console.log(query);
+      await pro(query);
+      randomIndex+=1;
     }
   }
 }
+ // log();

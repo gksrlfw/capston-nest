@@ -5,7 +5,8 @@
     <input
       @keydown.up="onKeyUp"
       @keydown.down="onKeyDown"
-      @keydown.esc="onPressEsc" 
+      @keydown.esc="onPressEsc"
+      @keydown.enter="onPressEnter"
       class="
         bg-grey-lightest
         border-2
@@ -63,7 +64,7 @@ export default {
      * tempUserInput은 searchHelper에서 지정된 값으로,
      * 무조건 이걸로 검색하도록 만드는게 편할것같다..
      */
-    function search() {
+    async function search() {
       if(tempUserInput.value === '해당하는 아파트가 존재하지 않습니다.') {
         onPressEsc();
         return;
@@ -72,7 +73,7 @@ export default {
       if(!dong || !apart) return alert('검색창에서 선택해주세요.');
       dong = dong.substring(0, dong.length-1);
       dong = dong.substring(1, dong.length);
-      searchStore.searchOneApart({ dong, apart });
+      await searchStore.searchOneApart2({ dong, apart });
       onPressEsc();
     }
 
@@ -91,6 +92,15 @@ export default {
       onSearchHelper.value = false;
     }
 
+    /**
+     * enter
+     */
+    async function onPressEnter(e) {
+      // onSearchHelper.value = false;
+      // await searchStore.searchOneApart2({ dong, apart });
+      onSearchHelper.value = false;
+      await onClickSearchHelper(e);
+    }
 
     async function onClickSearchHelper(e) {
       if(!e.target.textContent) return;
@@ -99,7 +109,7 @@ export default {
       const dong = arr[0].substring(1, arr[0].length).substring(0, arr[0].length-2);
       const apart = arr[1];
       onSearchHelper.value = false;
-      await searchStore.searchOneApart({ dong, apart });
+      await searchStore.searchOneApart2({ dong, apart });
     }
 
     /**
@@ -168,7 +178,8 @@ export default {
       onSearchHelper,
       onClickSearchHelper,
       onKeyDown,
-      onKeyUp
+      onKeyUp,
+      onPressEnter,
     }
   }
 };

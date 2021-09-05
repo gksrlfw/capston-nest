@@ -7,39 +7,10 @@ import axios from "axios";
 import {User} from "@common/decorators/user.decorator";
 import {UserEntity} from "@src/modules/users/entities/users.entity";
 
-class TestClass {
-  constructor(a, b) {
-    this.a = a;
-    this.b = b;
-  }
-  @IsString()
-  a: string;
-  @IsString()
-  b: string;
-  @IsString()
-  c: string;
-}
-
-interface TestInterface {
-  a: string;
-  b: string;
-}
-type TestType = {
-  a: string;
-  b: string;
-}
-
 @Controller('/')
 export class ApartsController {
   private recommendLists = {};
   constructor(private apartsService: ApartsService){}
-  
-  @Post('/map/test')
-  test(@Body() input: TestClass) {
-    console.log(input, typeof input, input instanceof TestClass);
-    // const a = new TestClass(input.a, input.b);
-    // console.log(a)
-  }
   
   @Get('/map/aparts')
   getAllAparts(@Body() position) {
@@ -49,11 +20,11 @@ export class ApartsController {
 
   @Get('/map/gus')
   async getAllGus() {
-    console.log(this.recommendLists)
+    console.log('recommendLists: ', this.recommendLists);
     return {
       gus: await this.apartsService.getAllGus(),
       recommendLists: await this.recommendLists
-    }
+    };
   }
 
   /**
@@ -71,7 +42,7 @@ export class ApartsController {
     * @param apart 
     */
   @Post('/search/aparts/ids')
-  searchApartsWithIds(@Body('ids') ids: number[]) {
+  async searchApartsWithIds(@Body('ids') ids: number[]) {
     if(!ids || !ids.length) return;
     return this.apartsService.searchApartsWithIds(ids);
   }
@@ -84,16 +55,32 @@ export class ApartsController {
   @Get('/search/apart')
   @UseGuards(JwtAuthGuard)
   async searchOneApart(@Query() input: { dong, apart }, @User() user: UserEntity) {
-    // 나이, 성별, 평형, 가격, 지역
-    // const user = {
-    //   email: "test@naver.com",
-    //   id: 1
-    // }
     console.log('searchOneApart', user);
-    this.recommendLists = this.apartsService.sendInfoForRecommendation({ dong: input.dong, apart: input.apart, user });
+    // this.recommendLists = this.apartsService.sendInfoForRecommendation({ dong: input.dong, apart: input.apart, user })
+    // !== undefined ? this.apartsService.sendInfoForRecommendation({ dong: input.dong, apart: input.apart, user })
+    //   : this.recommendLists;
     return this.apartsService.searchOneApart(input);
   }
   
+  @Get('/search/apart/recommend')
+  @UseGuards(JwtAuthGuard)
+  async recommend(@Query() input: { dong, apart }, @User() user: UserEntity) {
+    console.log('recommend', user);
+    this.recommendLists = await this.apartsService.sendInfoForRecommendation2({ dong: input.dong, apart: input.apart, user });
+    return this.recommendLists;
+    // return[{
+    //   dong: '사직동',
+    //   built_at: '2007',
+    //   apart: '삼정그린코아',
+    //   price: '5억'
+    // },
+    // {
+    //   dong: '사직2동',
+    //   built_at: '2007',
+    //   apart: '삼정그린코아',
+    //   price: '5억'
+    // }];
+  }
   /**
    * 좌표로 구를 검색하고, 해당하는 구에 있는 아파트를 리턴합니다.
    * @param input

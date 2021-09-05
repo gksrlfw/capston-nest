@@ -11,31 +11,38 @@
 </template>
 <script>
 import { watch, ref } from "vue";
-import { RECOMMEND_LISTS } from "@/store/Global";
+import { RECOMMEND_LISTS, recommendLists } from "@/store/Global";
 import searchStore from "@/store/Search";
 
 export default {
   setup() {
-    const recommendLists = ref([
-      {
-        dong: '사직동',
-        built_at: '2007',
-        apart: '삼정그린코아',
-        price: '5억'
-      },
-      {
-        dong: '사직2동',
-        built_at: '2007',
-        apart: '삼정그린코아',
-        price: '5억'
-      }
-    ]);
+    // const recommendLists = ref([]);
+    // const recommendLists = ref([
+    //   {
+    //     dong: '사직동',
+    //     built_at: '2007',
+    //     apart: '삼정그린코아',
+    //     price: '5억'
+    //   },
+    //   {
+    //     dong: '사직2동',
+    //     built_at: '2007',
+    //     apart: '삼정그린코아',
+    //     price: '5억'
+    //   }
+    // ]);
     const currentApart = ref('');
 
     watch(() => RECOMMEND_LISTS.value, async () => {
-      console.log('asdfadf', RECOMMEND_LISTS.value);
-      recommendLists.value = await searchStore.getApartsWithIds(RECOMMEND_LISTS.value);
-      console.log(recommendLists.value);
+      console.log('recommend_lists: ', RECOMMEND_LISTS.value);
+      recommendLists.value = await searchStore.getApartsWithIds(RECOMMEND_LISTS.value);;
+      console.log('recommendLists.value', recommendLists.value);
+    })
+
+    watch(() => recommendLists.value, async () => {
+      console.log('recommend_lists: ', recommendLists.value)
+      // recommendLists.value = await searchStore.getApartsWithIds(RECOMMEND_LISTS.value);;
+      // console.log('recommendLists.value', recommendLists.value);
     })
 
     // watch(() => currentApart.value, () => {
@@ -44,8 +51,8 @@ export default {
 
     function onClickRecommendation(dong, apart) {
       console.log(dong, apart);
-      dong = '장충동1가';
-      apart = '장충동라임카운티';
+      // dong = '장충동1가';
+      // apart = '장충동라임카운티';
       searchStore.searchOneApart({ dong, apart });
     }
     return {

@@ -132,8 +132,8 @@ async function getAllGus() {
   };
 
   const response = await axios.get(`${BASE_URL}/map/gus`, { headers });
-  RECOMMEND_LISTS.value = response.data?.recommendLists?.prediction;
-  console.log(response.data)
+  // RECOMMEND_LISTS.value = response.data?.recommendLists?.prediction;
+  // console.log(response.data)
   // console.log(RECOMMEND_LISTS)
   // { gus, recommendLists };
   return response.data.gus;

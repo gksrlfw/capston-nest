@@ -7,4 +7,5 @@ export const AXIOS_OPTIONS = {
   withCredentials: true,
 };
 
-export const RECOMMEND_LISTS = ref({});
+export const RECOMMEND_LISTS = ref({});   // id값만 들어있다
+export const recommendLists = ref([]);    // 실제 apart 데이터를 의미한다

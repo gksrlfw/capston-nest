@@ -17,7 +17,7 @@ export class AuthController {
 
   @Post('/signup')
   async signup(@Body() credentials: { user: SignupDTO }) {
-    return this.authService.signup(credentials.user);
+    return this.authService.signup(credentials.user)
   }
 
   //@UseGuards(AuthGuard('local'))  // selected localstrategy

@@ -32,6 +32,7 @@ export default {
     const isRecommendation = ref(true);
 
     watch(() => currentApart.value, () => {
+      if(!currentApart.value?.latitude || !currentApart.value?.longitude) return;
       map.setLocation({ lat: currentApart.value.latitude, lng: currentApart.value.longitude });
     });
 
@@ -39,11 +40,11 @@ export default {
       map.initMap(() => map.addClusterer({ lat: 37.5642135, lng: 127.0016985 }));
     });
 
-    function searchOneApart(e) {
+    async function searchOneApart(e) {
       const target = e.target;
       // 아파트를 클릭했을 때
       if(target.dataset?.dong) {
-        searchStore.searchOneApart({ dong: target.dataset.dong, apart: target.textContent });
+        await searchStore.searchOneApart2({ dong: target.dataset.dong, apart: target.textContent });
       }
 
       // 구에 대한 클러스터러를 클릭했을 때

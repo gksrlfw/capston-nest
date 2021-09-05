@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 /* eslint-disable no-undef */
 import { reactive, toRefs, ref } from "vue";
-import { BASE_URL, TOKEN, EMAIL } from "@/store/Global";
+import { BASE_URL, TOKEN, EMAIL, recommendLists } from "@/store/Global";
 import axios from 'axios';
 
 export class SearchStore {
@@ -95,13 +95,41 @@ export class SearchStore {
       };
       const response = await axios.get(`${BASE_URL}/search/apart?apart=${apart}&dong=${dong}`, { headers });
       this.currentAparts.value = response.data;
-      this.currentApart.value = response.data[0].value[0];
+      this.currentApart.value = response.data[0]?.value[0];
     }
     catch(err) {
       console.error(err);
     }
   }
-
+  
+  /**
+   * 먼저 검색 결과를 받아옵니다.
+   * 그다음 해당 내용으로 추천 목록을 받아옵니다. 비동기로 처리되는지 확인해야 합니다.
+   */
+  async searchOneApart2({ dong, apart }) {
+    try {
+      if(!dong || !apart) return alert('동, 아파트 이름이 필요합니다.');
+      const token = JSON.parse(sessionStorage.getItem(TOKEN));
+      if(!token) return alert('로그인이 필요합니다.');
+      
+      const headers = {
+        Authorization: `TOKEN ${token}`
+      };
+      const response = await axios.get(`${BASE_URL}/search/apart?apart=${apart}&dong=${dong}`, { headers });
+      console.log(response.data);
+      this.currentAparts.value = response.data;
+      this.currentApart.value = response.data[0].value[0];
+      
+      const res = await axios.get(`${BASE_URL}/search/apart/recommend?apart=${apart}&dong=${dong}`, { headers });
+      recommendLists.value = res.data;
+      console.log('rec', recommendLists.value);
+      
+    }
+    catch(err) {
+      console.error(err);
+    }
+  }
+  
   async searchOneGuWithPosition({ lat, lng }){
     try {
       const token = JSON.parse(sessionStorage.getItem(TOKEN));

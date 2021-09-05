@@ -7,9 +7,10 @@ import axios from "axios";
 import {ClickLogEntity} from "@src/modules/users/entities/click-log.entity";
 import Time from "@common/time";
 
+let isRec = false;
 @Injectable()
 export class ApartsService {
-
+  isRecommend = false;
   constructor(
     @InjectRepository(ApartEntity) private apartRepository: Repository<ApartEntity>,
     @InjectRepository(UserEntity) private userRepository: Repository<UserEntity>,
@@ -117,12 +118,19 @@ export class ApartsService {
       console.log('sendInfoForRecommendation...', user)
       const userInfo = await this.userRepository.findOne({ id: user.id });
       const apartInfo = (await this.apartRepository.query(`select * from apart where dong = ? and apart = ? limit 1`, [dong, apart]))[0];
-      
-  
+    
+      let recommend;
+    
+      console.log('isRec', isRec);
       // flask 서버로 보낸다
-      const recommend = await axios.get(`https://0103-1-231-217-180.ngrok.io/recommend/1`);
-      console.log(recommend.data);
-
+      // if(!isRec) {
+      isRec = true;
+      recommend = await axios.get(`https://33bd-1-231-217-180.ngrok.io/recommend/${userInfo.id}`);
+    
+      isRec = false;
+      console.log(recommend.data, userInfo.id, isRec);
+      // }
+    
       const clickLog = this.clickLogRepository.create({
         userId: userInfo.id,
         apartId: apartInfo.id,
@@ -131,17 +139,64 @@ export class ApartsService {
       });
       await this.clickLogRepository.save(clickLog);
       console.log('insert log: ', userInfo.id, apartInfo.id);
-
-      return recommend.data;  
+    
+      return recommend?.data;
     }
     catch(err) {
-      console.error(err);
+      console.error(err.message);
+    }
+  }
+  
+  /**
+   * 여기서 바로 계산해서 줍니다. 이것도 안되면 프론트에서 바로 요청해봅시다..
+   * @param dong
+   * @param apart
+   * @param user
+   */
+  async sendInfoForRecommendation2({ dong, apart, user }) {
+    try {
+      console.log('sendInfoForRecommendation...', user)
+      const userInfo = await this.userRepository.findOne({ id: user.id });
+      const apartInfo = (await this.apartRepository.query(`select * from apart where dong = ? and apart = ? limit 1`, [dong, apart]))[0];
+      
+      let recommend;
+      
+      console.log('isRec', isRec);
+      // flask 서버로 보낸다
+      // if(!isRec) {
+      isRec = true;
+      recommend = await axios.get(`https://7039-1-231-217-180.ngrok.io/recommend/${userInfo.id}`);
+      
+      isRec = false;
+      console.log(recommend.data, userInfo.id, isRec);
+      // }
+      
+      const clickLog = this.clickLogRepository.create({
+        userId: userInfo.id,
+        apartId: apartInfo.id,
+        created: Time.now(),
+        updated: Time.now(),
+      });
+      await this.clickLogRepository.save(clickLog);
+      console.log('insert log: ', userInfo.id, apartInfo.id);
+      
+      // return recommend?.data;
+  
+      return this.searchApartsWithIds(recommend?.data?.prediction);
+    }
+    catch(err) {
+      console.error(err.message);
     }
   }
 
   async searchApartsWithIds(ids: number[]) {
-    return this.apartRepository.findByIds(ids, {
-      take: 5,
-    });
+    console.log('ids', ids);
+    if(ids.length>5) {
+      const temp = [];
+      for(let i=0 ;i<5; i++)
+        temp.push(ids[i]);
+      ids = temp;
+    }
+    return this.apartRepository.findByIds(ids);
   }
 }
