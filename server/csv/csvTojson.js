@@ -161,8 +161,8 @@ const GUS = [
 
 // const GUS = ['종로구','중구','용산구','성동구','광진구','동대문구','중랑구','성북구','강북구','도봉구','노원구','은평구','서대문구','마포구','양천구','강서구','구로구','금천구','영등포구','동작구','관악구','서초구','강남구','송파구','강동구'];
 
-var connection = mysql.createConnection(conn); // DB 커넥션 생성
-connection.connect();   // DB 접속
+// var connection = mysql.createConnection(conn); // DB 커넥션 생성
+// connection.connect();   // DB 접속
 
 // console.log(connection)
 /**
@@ -298,3 +298,72 @@ async function log() {
   }
 }
  // log();
+const { Parser, AsyncParser } = require('json2csv');
+const { createReadStream, createWriteStream } = require('fs');
+
+function test() {
+  CSVToJSON()
+    .fromFile('data2.csv')
+    .then(async users => {
+      
+      const result = [];
+      for(let i=0; i<users.length; i++) {
+        if(i%10 === 0) result.push(users[i]);
+      }
+      
+      const json2csv = new Parser();
+      const csv = json2csv.parse(result);
+      console.log(csv);
+      const output = createWriteStream('/Users/solar/Desktop/nodejs/capston-design/capston-design-docker/server/csv/test.csv', {
+        encoding: 'utf8'
+      });
+      output.write(csv);
+      
+      for (let a of users) {
+        // console.log(a)
+        // const arr = a.price.split(',');
+        // let str = '';
+        // for (let i = 0; i < arr.length; i++) {
+        //   str += arr[i];
+        // }
+        // a.price = Number.parseInt(str);
+        //
+        // const d = new Date();
+        // d.setFullYear(Number.parseInt(a.year));
+        // d.setMonth(Number.parseInt(a.month));
+        // d.setDate(Number.parseInt(a.date));
+        // a.traded_at = getTime(d);
+        //
+        // a.built_at = Number.parseInt(a.built_at);
+        // a.latitude = Number.parseFloat(a.latitude);
+        // a.longitude = Number.parseFloat(a.longitude);
+        // a.floor = Number.parseInt(a.floor);
+        // a.area = Number.parseFloat(a.area);
+        // delete a.year;
+        // delete a.month;
+        // delete a.date;
+        //
+        // if (!a.longitude || !a.latitude) continue;
+        //
+        // var testQuery = `insert into recommend.apart(price, built_at, traded_at, dong, apart, latitude, longitude,
+        //                                              floor, area, gu)
+        //                  values (${a.price}, ${a.built_at}, "${a.traded_at}", "${a.dong}", "${a.apart}", ${a.latitude},
+        //                          ${a.longitude}, ${a.floor}, ${a.area}, "${a.gu}")`;
+        // console.log(testQuery);
+        // await pro(testQuery)
+      }
+      // let i = 0;
+      // for (let gu of GUS) {
+      //   i++;
+      //   const guQuery = `insert into recommend.gu(name, latitude, longitude, size)
+      //                    values ("${gu.name}", ${gu.latitude}, ${gu.longitude}, ${i});`;
+      //   console.log(guQuery);
+      //   await pro(guQuery);
+      // }
+    }).catch(err => {
+    // log error if any
+    console.log(err);
+  });
+}
+
+test();

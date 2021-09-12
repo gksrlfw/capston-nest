@@ -125,7 +125,7 @@ export class ApartsService {
       // flask 서버로 보낸다
       // if(!isRec) {
       isRec = true;
-      recommend = await axios.get(`https://33bd-1-231-217-180.ngrok.io/recommend/${userInfo.id}`);
+      recommend = await axios.get(`https://e384-1-231-217-180.ngrok.io/recommend/${userInfo.id}`);
     
       isRec = false;
       console.log(recommend.data, userInfo.id, isRec);
@@ -165,7 +165,7 @@ export class ApartsService {
       // flask 서버로 보낸다
       // if(!isRec) {
       isRec = true;
-      recommend = await axios.get(`https://7039-1-231-217-180.ngrok.io/recommend/${userInfo.id}`);
+      recommend = await axios.get(`https://e384-1-231-217-180.ngrok.io/recommend/${userInfo.id}`);
       
       isRec = false;
       console.log(recommend.data, userInfo.id, isRec);

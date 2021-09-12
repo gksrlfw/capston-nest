@@ -15,6 +15,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { UsersModule } from './modules/users/users.module';
 import { ApartsModule } from './modules/aparts/aparts.module';
 import { AllExceptionFilter } from './common/filters/exception.filter';
+import { EntityTestModule } from './modules/entity-test/entity-test.module';
 
 @Module({
   imports: [
@@ -23,7 +24,8 @@ import { AllExceptionFilter } from './common/filters/exception.filter';
     LoggerModule,
     UsersModule,
     AuthModule,
-    ApartsModule
+    ApartsModule,
+    EntityTestModule
   ],
   providers: [
     {

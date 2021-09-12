@@ -1,6 +1,8 @@
 .idea
 mysql
 
+/csv
+
 # compiled output
 /dist
 /node_modules
